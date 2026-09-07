@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>回读</title>
+<style>
+:root{
+  --paper:#f7f3ec; --paper-2:#fffdf9; --ink:#22201c; --ink-2:#5d564c; --ink-3:#918879;
+  --rule:#e2dacd; --rule-2:#efe8dc; --seal:#a8352c; --ok:#3f6b4d; --again:#9a5540;
+  --lift:0 1px 1px rgba(34,32,28,.04), 0 10px 30px -12px rgba(34,32,28,.18);
+  --lift-2:0 2px 4px rgba(34,32,28,.05), 0 24px 60px -24px rgba(34,32,28,.28);
+  --serif:"Source Han Serif SC","Noto Serif CJK SC","Songti SC",Georgia,"SimSun",serif;
+  --sans:-apple-system,"Segoe UI Variable Text","Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --paper:#14120f; --paper-2:#1c1915; --ink:#eae3d7; --ink-2:#a89e8e; --ink-3:#78705f;
+  --rule:#2e2921; --rule-2:#241f19; --seal:#c9564a; --ok:#7fa98c; --again:#c58a72;
+  --lift:0 1px 1px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.6);
+  --lift-2:0 2px 4px rgba(0,0,0,.35), 0 24px 60px -24px rgba(0,0,0,.7);
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -10%, color-mix(in srgb,var(--paper-2) 70%,transparent), transparent 60%);
+  background-attachment:fixed;
+}
+/* a whisper of grain, procedural so there is no asset to ship */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");
+}
+main,header{position:relative;z-index:1}
+
+/* ── header ─────────────────────────────────────────────── */
+header{position:sticky;top:0;z-index:9;
+  background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--rule-2)}
+.bar{max-width:660px;margin:0 auto;padding:15px 22px;display:flex;align-items:baseline;gap:16px}
+.mark{font-family:var(--serif);font-size:19px;letter-spacing:.22em;color:var(--ink);
+  text-indent:.22em;font-weight:500}
+nav{margin-left:auto;display:flex;gap:2px}
+nav button{background:none;border:0;color:var(--ink-3);padding:5px 11px;border-radius:7px;
+  font:inherit;font-size:13.5px;cursor:pointer;position:relative;transition:color .2s var(--ease)}
+nav button:hover{color:var(--ink-2)}
+nav button[aria-current=true]{color:var(--ink)}
+nav button[aria-current=true]::after{content:"";position:absolute;left:11px;right:11px;bottom:1px;
+  height:1.5px;background:var(--seal);border-radius:2px}
+
+main{max-width:660px;margin:0 auto;padding:26px 22px 80px}
+
+/* ── progress dots ──────────────────────────────────────── */
+.dots{display:flex;gap:7px;justify-content:center;margin:0 0 30px;height:6px;align-items:center}
+.dots i{width:6px;height:6px;border-radius:99px;background:var(--rule);display:block;
+  transition:background .35s var(--ease),transform .35s var(--ease)}
+.dots i.done{background:var(--ink-3)}
+.dots i.here{background:var(--seal);transform:scale(1.45)}
+
+/* ── the card ───────────────────────────────────────────── */
+.sheet{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:3px;
+  padding:30px 32px 26px;box-shadow:var(--lift);position:relative;
+  animation:rise .5s var(--ease) both}
+.sheet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--cloth,var(--ink-3));border-radius:3px 0 0 3px;opacity:.85}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.994)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet.leaving{animation:leave .3s var(--ease) forwards}
+@keyframes leave{to{opacity:0;transform:translateY(-14px) scale(.99)}}
+.sheet.leaving-again{animation:leaveB .3s var(--ease) forwards}
+@keyframes leaveB{to{opacity:0;transform:translateY(14px) scale(.99)}}
+
+.meta{font-size:12.5px;line-height:1.75;color:var(--ink-3);margin-bottom:22px}
+.meta .title{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:500;
+  display:block;margin-bottom:2px;letter-spacing:.01em}
+.meta .sep{opacity:.4;margin:0 6px}
+.ago{color:var(--cloth,var(--ink-2));font-weight:500}
+
+/* 19.5/1.88 keeps a long highlight and both buttons on one laptop screen without the type
+   feeling cramped. Anything looser and the reader has to scroll to answer. */
+blockquote{margin:0;font-family:var(--serif);font-size:19.5px;line-height:1.88;color:var(--ink);
+  letter-spacing:.012em;white-space:pre-wrap;word-break:break-word;hyphens:auto}
+blockquote.hang{text-indent:-.62em}
+
+/* the reveal — the small idea the whole product turns on */
+.reveal{margin-top:26px}
+.reveal button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:0;
+  color:var(--ink-3);font:inherit;font-size:13.5px;cursor:pointer;transition:color .2s var(--ease)}
+.reveal button:hover{color:var(--cloth,var(--ink-2))}
+.reveal button .chev{transition:transform .3s var(--ease);display:inline-block;font-size:11px}
+.reveal[data-open=true] button .chev{transform:rotate(90deg)}
+.reveal .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s var(--ease),
+  opacity .3s var(--ease);opacity:0;margin-top:0}
+.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1;margin-top:14px}
+.reveal .body > div{overflow:hidden}
+.note{border-left:2px solid var(--cloth,var(--rule));padding:2px 0 2px 16px;
+  font-size:15.5px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+.note .who{display:block;font-size:11.5px;letter-spacing:.12em;color:var(--ink-3);
+  margin-bottom:7px;font-weight:500}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+.answers button{padding:15px 12px;border-radius:2px;border:1px solid var(--rule);
+  background:transparent;color:var(--ink-2);font:inherit;font-size:15px;cursor:pointer;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease);
+  font-family:var(--serif);letter-spacing:.06em}
+.answers button:hover{background:var(--paper)}
+.answers .again:hover{border-color:var(--again);color:var(--again)}
+.answers .got:hover{border-color:var(--ok);color:var(--ok)}
+.hint{text-align:center;margin-top:16px;font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.hint kbd{font:inherit;border:1px solid var(--rule);border-radius:3px;padding:0 5px;margin:0 2px}
+
+/* ── stat strip ─────────────────────────────────────────── */
+.strip{display:flex;margin:0 0 34px;border-top:1px solid var(--rule-2);
+  border-bottom:1px solid var(--rule-2)}
+.strip div{flex:1;padding:15px 6px;text-align:center;position:relative}
+.strip div+div::before{content:"";position:absolute;left:0;top:26%;bottom:26%;width:1px;
+  background:var(--rule-2)}
+.strip b{display:block;font-family:var(--serif);font-size:23px;font-weight:500;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.strip span{font-size:11.5px;color:var(--ink-3);letter-spacing:.08em}
+
+/* ── seal / done ────────────────────────────────────────── */
+.done{text-align:center;padding:66px 20px 40px}
+.seal{width:96px;height:96px;margin:0 auto 26px;border:2.5px solid var(--seal);border-radius:6px;
+  display:grid;place-items:center;color:var(--seal);font-family:var(--serif);font-size:25px;
+  line-height:1.15;letter-spacing:.08em;transform:rotate(-4deg);opacity:.92;
+  animation:stamp .55s var(--ease) both}
+.seal span{display:block}
+@keyframes stamp{0%{opacity:0;transform:rotate(-4deg) scale(1.5)}60%{opacity:.92;transform:rotate(-4deg) scale(.96)}100%{opacity:.92;transform:rotate(-4deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.seal{animation:none}}
+.done h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 8px;letter-spacing:.05em}
+.done p{color:var(--ink-3);font-size:14px;margin:0}
+
+/* ── library ────────────────────────────────────────────── */
+.book{border-bottom:1px solid var(--rule-2)}
+.book:last-child{border-bottom:0}
+.book > summary{list-style:none;cursor:pointer;padding:15px 4px;display:flex;align-items:center;
+  gap:13px;transition:opacity .2s var(--ease)}
+.book > summary::-webkit-details-marker{display:none}
+.book > summary:hover{opacity:.72}
+.spine{width:4px;height:26px;border-radius:2px;background:var(--cloth);flex:none}
+.book .bt{font-family:var(--serif);font-size:15.5px;flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.book .bn{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex:none}
+.book .items{padding:2px 0 16px 17px}
+.book .item{padding:11px 0;border-top:1px dotted var(--rule)}
+.book .item:first-child{border-top:0}
+.book .q{font-family:var(--serif);font-size:15px;line-height:1.8;color:var(--ink-2);
+  word-break:break-word}
+.book .sub{font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:99px;margin-left:7px;
+  border:1px solid var(--rule);color:var(--ink-3);letter-spacing:.04em}
+
+/* ── import ─────────────────────────────────────────────── */
+.step{display:flex;gap:15px;padding:19px 0;border-bottom:1px solid var(--rule-2)}
+.step:last-of-type{border-bottom:0}
+.step .n{width:23px;height:23px;flex:none;border-radius:99px;border:1px solid var(--rule);
+  display:grid;place-items:center;font-size:12px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;margin-top:2px}
+.step h3{margin:0 0 5px;font-size:15px;font-weight:600}
+.step p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.75}
+.blet{display:inline-block;margin-top:11px;padding:9px 17px;border:1px solid var(--seal);
+  border-radius:2px;color:var(--seal);text-decoration:none;font-size:14px;
+  font-family:var(--serif);letter-spacing:.06em;cursor:grab;background:var(--paper-2)}
+.blet:active{cursor:grabbing}
+.drop{border:1px dashed var(--rule);border-radius:3px;padding:34px 22px;text-align:center;
+  cursor:pointer;transition:border-color .2s var(--ease),background .2s var(--ease);margin-top:8px}
+.drop:hover,.drop.over{border-color:var(--seal);background:var(--paper-2)}
+.drop b{display:block;font-family:var(--serif);font-size:15.5px;font-weight:500;margin-bottom:5px}
+.drop span{font-size:12.5px;color:var(--ink-3)}
+.log{font:12px/1.75 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--ink-2);
+  white-space:pre-wrap;margin-top:18px;padding:13px 15px;background:var(--paper-2);
+  border:1px solid var(--rule-2);border-radius:3px;max-height:180px;overflow:auto}
+.log:empty{display:none}
+.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
+.tools button{padding:8px 14px;border-radius:2px;border:1px solid var(--rule);background:none;
+  color:var(--ink-3);font:inherit;font-size:13px;cursor:pointer;transition:all .2s var(--ease)}
+.tools button:hover{color:var(--ink);border-color:var(--ink-3)}
+.tools button.danger:hover{color:var(--seal);border-color:var(--seal)}
+
+.blank{text-align:center;padding:64px 20px}
+.blank h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 9px}
+.blank p{color:var(--ink-3);font-size:14px;margin:0 0 20px}
+.blank button{padding:10px 20px;border:1px solid var(--rule);border-radius:2px;background:none;
+  color:var(--ink);font:inherit;font-size:14px;font-family:var(--serif);letter-spacing:.06em;
+  cursor:pointer}
+.blank button:hover{border-color:var(--seal);color:var(--seal)}
+h2.sec{font-family:var(--serif);font-size:16px;font-weight:500;margin:0 0 4px;letter-spacing:.04em}
+p.sub{font-size:13px;color:var(--ink-3);margin:0 0 22px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <span class="mark">回读</span>
+  <nav>
+    <button data-view="review" aria-current="true">今日</button>
+    <button data-view="library">书架</button>
+    <button data-view="import">导入</button>
+  </nav>
+</div></header>
+<main><div id="strip"></div><div id="view"></div></main>
+
+<script type="module">
+import { importWeRead } from '../src/import-weread.mjs';
+import { mergeById, validate } from '../src/schema.mjs';
+import { pickDaily, grade, stats as calcStats, isNew } from '../src/review.mjs';
+import { allCards, putAll, putOne, clearAll, exportJson } from './store.mjs';
+import { clothCss, agoText, monthText, esc, hangsFirstGlyph, num } from './ui.mjs';
+
+const $ = (s, r = document) => r.querySelector(s);
+const view = $('#view');
+const now = () => Math.floor(Date.now() / 1000);
+
+let cards = [];
+let batch = [];
+let at = 0;
+let where = 'review';
+let busy = false;
+
+async function boot(){ cards = await allCards(); render(); }
+
+function render(){
+  const t = now();
+  const s = calcStats(cards, t);
+  const left = pickDaily(cards, { now: t, size: 10, maxNew: 5 }).length;
+  // The 今日 screen deliberately shows no numbers: the dots already say where you are, and a
+  // stat row above the card both crowds it off a laptop screen and turns reading into a metric.
+  // The counts live on 书架, where looking at your collection is the point.
+  $('#strip').innerHTML = (cards.length && where !== 'review') ? `<div class="strip">${[
+    ['今日待读', left], ['已回顾', s.reviewed], ['未读过', s.new], ['全部', s.total],
+  ].map(([k,v]) => `<div><b>${num(v)}</b><span>${k}</span></div>`).join('')}</div>` : '';
+  for (const b of document.querySelectorAll('nav button'))
+    b.setAttribute('aria-current', String(b.dataset.view === where));
+  ({ review: drawReview, library: drawLibrary, import: drawImport })[where]();
+}
+
+/* ── 今日 ─────────────────────────────────────────────── */
+function drawReview(){
+  if (!cards.length){
+    view.innerHTML = `<div class="blank"><h2>书架还是空的</h2>
+      <p>把微信读书里划过的线接过来，它们才有机会再见到你。</p>
+      <button id="go">去导入</button></div>`;
+    $('#go').onclick = () => { where = 'import'; render(); };
+    return;
+  }
+  if (!batch.length || at >= batch.length){
+    batch = pickDaily(cards, { now: now(), size: 10, maxNew: 5 });
+    at = 0;
+  }
+  if (!batch.length){
+    view.innerHTML = `<div class="done">
+      <div class="seal"><span>今日</span><span>已毕</span></div>
+      <h2>今天读完了</h2><p>明天会有新的一批等你。</p></div>`;
+    return;
+  }
+  const c = batch[at];
+  const cloth = clothCss(c.bookId);
+  const seen = isNew(c) ? '第一次见' : `第 ${c.review.reps + 1} 次见`;
+  view.innerHTML = `
+    <div class="dots">${batch.map((_, i) =>
+      `<i class="${i < at ? 'done' : i === at ? 'here' : ''}"></i>`).join('')}</div>
+    <article class="sheet" style="--cloth:${cloth}">
+      <div class="meta">
+        <span class="title">${esc(c.bookTitle)}</span>
+        ${c.bookAuthor ? esc(c.bookAuthor) + '<span class="sep">·</span>' : ''}
+        ${c.chapter ? esc(c.chapter) : '整本书'}
+        <br>
+        <span class="ago">${agoText(c.createdAt, now())}</span>
+        <span class="sep">·</span>${monthText(c.createdAt)}划下
+        <span class="sep">·</span>${seen}
+      </div>
+      ${c.text ? `<blockquote class="${hangsFirstGlyph(c.text) ? 'hang' : ''}">${esc(c.text)}</blockquote>` : ''}
+      ${c.note ? `<div class="reveal" data-open="false" id="rv">
+          <button type="button"><span class="chev">›</span>你当时写了一句话</button>
+          <div class="body"><div><div class="note">${esc(c.note)}</div></div></div>
+        </div>` : ''}
+      <div class="answers">
+        <button class="again" data-a="again">再来</button>
+        <button class="got" data-a="got">记住了</button>
+      </div>
+    </article>
+    <div class="hint"><kbd>J</kbd> 再来 <kbd>K</kbd> 记住了 <kbd>空格</kbd> 展开当时的想法</div>`;
+  const rv = $('#rv');
+  if (rv) rv.querySelector('button').onclick = () => toggleNote();
+  for (const b of view.querySelectorAll('[data-a]')) b.onclick = () => answer(b.dataset.a);
+}
+
+function toggleNote(){
+  const rv = $('#rv');
+  if (!rv) return;
+  rv.dataset.open = rv.dataset.open === 'true' ? 'false' : 'true';
+}
+
+async function answer(outcome){
+  if (busy) return;
+  busy = true;
+  const sheet = $('.sheet');
+  if (sheet) sheet.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
+  const g = grade(batch[at], outcome, now());
+  await putOne(g);
+  cards = cards.map(x => x.id === g.id ? g : x);
+  await new Promise(r => setTimeout(r, 190));
+  at++;
+  busy = false;
+  render();
+}
+
+/* ── 书架 ─────────────────────────────────────────────── */
+function drawLibrary(){
+  if (!cards.length){
+    view.innerHTML = `<div class="blank"><h2>还没有东西</h2><p>导入之后，这里按书排列。</p></div>`;
+    return;
+  }
+  const byBook = new Map();
+  for (const c of cards){
+    if (!byBook.has(c.bookId)) byBook.set(c.bookId, { title: c.bookTitle, items: [] });
+    byBook.get(c.bookId).items.push(c);
+  }
+  const books = [...byBook.entries()]
+    .map(([id, b]) => ({ id, ...b, items: b.items.sort((x, y) => y.createdAt - x.createdAt) }))
+    .sort((a, b) => b.items.length - a.items.length);
+  view.innerHTML = `<h2 class="sec">书架</h2>
+    <p class="sub">${books.length} 本书，${num(cards.length)} 条划线。点开看某一本。</p>
+    ${books.map(b => `
+      <details class="book" style="--cloth:${clothCss(b.id)}">
+        <summary><i class="spine"></i><span class="bt">${esc(b.title)}</span>
+          <span class="bn">${b.items.length}</span></summary>
+        <div class="items">${b.items.map(c => `
+          <div class="item">
+            <div class="q">${esc(c.text || c.note)}</div>
+            <div class="sub">${c.chapter ? esc(c.chapter) + ' · ' : ''}${agoText(c.createdAt, now())}
+              ${isNew(c) ? '<span class="tag">没读过</span>'
+                : `<span class="tag">间隔 ${c.review.interval} 天</span>`}</div>
+          </div>`).join('')}</div>
+      </details>`).join('')}`;
+}
+
+/* ── 导入 ─────────────────────────────────────────────── */
+async function drawImport(){
+  let blet = '';
+  try { blet = (await (await fetch('./bookmarklet.txt')).text()).trim(); } catch {}
+  view.innerHTML = `<h2 class="sec">把微信读书的划线接过来</h2>
+    <p class="sub">全程在你自己的电脑上，没有服务器，没有账号，什么都不会上传。</p>
+    <div class="step"><div class="n">1</div><div>
+      <h3>把下面这个按钮拖到浏览器书签栏</h3>
+      <p>它是一段只在微信读书网页上运行的小脚本，不是插件，不用安装。
+        <br>看不到书签栏就按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> 打开。</p>
+      ${blet ? `<a class="blet" href="${esc(blet)}" draggable="true"
+        onclick="alert('别在这里点它。请把它拖到书签栏，然后到 weread.qq.com 上点。');return false">取回我的划线</a>`
+        : `<p style="color:var(--seal)">书签脚本没生成，先跑 node tools/build-bookmarklet.mjs</p>`}
+    </div></div>
+    <div class="step"><div class="n">2</div><div>
+      <h3>打开 weread.qq.com 并登录，点一下那个书签</h3>
+      <p>右下角会显示进度，跑完自动下载一个 <code>weread-日期.json</code>。书多的话要等十几秒。</p>
+    </div></div>
+    <div class="step"><div class="n">3</div><div>
+      <h3>把那个文件拖到下面</h3>
+      <div class="drop" id="drop">
+        <b>拖到这里，或点击选择</b>
+        <span>也接受 tools/weread_dump.py 生成的分本 json，可以多选</span>
+        <input type="file" id="file" multiple accept="application/json,.json" hidden>
+      </div>
+    </div></div>
+    <div class="log" id="log"></div>
+    <div class="tools">
+      <button id="exp">导出我的全部数据</button>
+      <button id="clr" class="danger">清空本机数据</button>
+    </div>`;
+  const drop = $('#drop'), file = $('#file');
+  drop.onclick = () => file.click();
+  file.onchange = () => ingest([...file.files]);
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); ingest([...e.dataTransfer.files]); };
+  $('#exp').onclick = async () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([await exportJson()], { type:'application/json' }));
+    a.download = 'huidu-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+  $('#clr').onclick = async () => {
+    if (!confirm('清空这台电脑上保存的全部划线和回顾进度。不可撤销，确定吗？')) return;
+    await clearAll(); cards = []; batch = []; at = 0; render();
+  };
+}
+
+function log(s){ const el = $('#log'); if (el) el.textContent += s + '\n'; }
+
+async function ingest(files){
+  if (!files.length) return;
+  const blobs = [];
+  for (const f of files){
+    try { blobs.push(JSON.parse(await f.text())); }
+    catch { log(`✗ ${f.name} 不是合法 JSON，跳过`); }
+  }
+  const { cards: incoming, skipped } = importWeRead(blobs);
+  const good = incoming.filter(c => validate(c).length === 0);
+  const bad = incoming.length - good.length;
+  const { cards: merged, changed, added, updated } = mergeById(cards, good);
+  // persist `changed`, never `good` — `good` has no review state and would wipe every schedule
+  await putAll(changed);
+  cards = merged; batch = []; at = 0;
+  log(`读了 ${files.length} 个文件，解析出 ${incoming.length} 条`);
+  if (skipped) log(`跳过 ${skipped} 条（纯星级评分，没有正文）`);
+  if (bad) log(`✗ ${bad} 条格式不合规，没有导入`);
+  log(`新增 ${added} 条，更新 ${updated} 条，现在共 ${cards.length} 条`);
+  render();
+  drawImport().then(() => { const el = $('#log'); if (el) el.textContent =
+    `导入完成：现在共 ${cards.length} 条，来自 ${new Set(cards.map(c=>c.bookId)).size} 本书。点上面的「今日」开始。`; });
+}
+
+for (const b of document.querySelectorAll('nav button'))
+  b.onclick = () => { where = b.dataset.view; render(); };
+
+addEventListener('keydown', e => {
+  if (where !== 'review' || !batch.length || at >= batch.length) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'j' || e.key === 'J') answer('again');
+  else if (e.key === 'k' || e.key === 'K') answer('got');
+  else if (e.key === ' ') { e.preventDefault(); toggleNote(); }
+});
+
+boot();
+</script>
+</body>
+</html>

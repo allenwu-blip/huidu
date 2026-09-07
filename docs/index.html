@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>回读</title>
+<style>
+:root{
+  --paper:#f7f3ec; --paper-2:#fffdf9; --ink:#22201c; --ink-2:#5d564c; --ink-3:#918879;
+  --rule:#e2dacd; --rule-2:#efe8dc; --seal:#a8352c; --ok:#3f6b4d; --again:#9a5540;
+  --lift:0 1px 1px rgba(34,32,28,.04), 0 10px 30px -12px rgba(34,32,28,.18);
+  --lift-2:0 2px 4px rgba(34,32,28,.05), 0 24px 60px -24px rgba(34,32,28,.28);
+  --serif:"Source Han Serif SC","Noto Serif CJK SC","Songti SC",Georgia,"SimSun",serif;
+  --sans:-apple-system,"Segoe UI Variable Text","Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --paper:#14120f; --paper-2:#1c1915; --ink:#eae3d7; --ink-2:#a89e8e; --ink-3:#78705f;
+  --rule:#2e2921; --rule-2:#241f19; --seal:#c9564a; --ok:#7fa98c; --again:#c58a72;
+  --lift:0 1px 1px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.6);
+  --lift-2:0 2px 4px rgba(0,0,0,.35), 0 24px 60px -24px rgba(0,0,0,.7);
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -10%, color-mix(in srgb,var(--paper-2) 70%,transparent), transparent 60%);
+  background-attachment:fixed;
+}
+/* a whisper of grain, procedural so there is no asset to ship */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");
+}
+main,header{position:relative;z-index:1}
+
+/* ── header ─────────────────────────────────────────────── */
+header{position:sticky;top:0;z-index:9;
+  background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--rule-2)}
+.bar{max-width:660px;margin:0 auto;padding:15px 22px;display:flex;align-items:baseline;gap:16px}
+.mark{font-family:var(--serif);font-size:19px;letter-spacing:.22em;color:var(--ink);
+  text-indent:.22em;font-weight:500}
+nav{margin-left:auto;display:flex;gap:2px}
+nav button{background:none;border:0;color:var(--ink-3);padding:5px 11px;border-radius:7px;
+  font:inherit;font-size:13.5px;cursor:pointer;position:relative;transition:color .2s var(--ease)}
+nav button:hover{color:var(--ink-2)}
+nav button[aria-current=true]{color:var(--ink)}
+nav button[aria-current=true]::after{content:"";position:absolute;left:11px;right:11px;bottom:1px;
+  height:1.5px;background:var(--seal);border-radius:2px}
+
+main{max-width:660px;margin:0 auto;padding:26px 22px 80px}
+
+/* ── progress dots ──────────────────────────────────────── */
+.dots{display:flex;gap:7px;justify-content:center;margin:0 0 30px;height:6px;align-items:center}
+.dots i{width:6px;height:6px;border-radius:99px;background:var(--rule);display:block;
+  transition:background .35s var(--ease),transform .35s var(--ease)}
+.dots i.done{background:var(--ink-3)}
+.dots i.here{background:var(--seal);transform:scale(1.45)}
+
+/* ── the card ───────────────────────────────────────────── */
+.sheet{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:3px;
+  padding:30px 32px 26px;box-shadow:var(--lift);position:relative;
+  animation:rise .5s var(--ease) both}
+.sheet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--cloth,var(--ink-3));border-radius:3px 0 0 3px;opacity:.85}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.994)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet.leaving{animation:leave .3s var(--ease) forwards}
+@keyframes leave{to{opacity:0;transform:translateY(-14px) scale(.99)}}
+.sheet.leaving-again{animation:leaveB .3s var(--ease) forwards}
+@keyframes leaveB{to{opacity:0;transform:translateY(14px) scale(.99)}}
+
+.meta{font-size:12.5px;line-height:1.75;color:var(--ink-3);margin-bottom:22px}
+.meta .title{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:500;
+  display:block;margin-bottom:2px;letter-spacing:.01em}
+.meta .sep{opacity:.4;margin:0 6px}
+.ago{color:var(--cloth,var(--ink-2));font-weight:500}
+
+/* 19.5/1.88 keeps a long highlight and both buttons on one laptop screen without the type
+   feeling cramped. Anything looser and the reader has to scroll to answer. */
+blockquote{margin:0;font-family:var(--serif);font-size:19.5px;line-height:1.88;color:var(--ink);
+  letter-spacing:.012em;white-space:pre-wrap;word-break:break-word;hyphens:auto}
+blockquote.hang{text-indent:-.62em}
+
+/* the reveal — the small idea the whole product turns on */
+.reveal{margin-top:26px}
+.reveal button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:0;
+  color:var(--ink-3);font:inherit;font-size:13.5px;cursor:pointer;transition:color .2s var(--ease)}
+.reveal button:hover{color:var(--cloth,var(--ink-2))}
+.reveal button .chev{transition:transform .3s var(--ease);display:inline-block;font-size:11px}
+.reveal[data-open=true] button .chev{transform:rotate(90deg)}
+.reveal .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s var(--ease),
+  opacity .3s var(--ease);opacity:0;margin-top:0}
+.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1;margin-top:14px}
+.reveal .body > div{overflow:hidden}
+.note{border-left:2px solid var(--cloth,var(--rule));padding:2px 0 2px 16px;
+  font-size:15.5px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+.note .who{display:block;font-size:11.5px;letter-spacing:.12em;color:var(--ink-3);
+  margin-bottom:7px;font-weight:500}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+.answers button{padding:15px 12px;border-radius:2px;border:1px solid var(--rule);
+  background:transparent;color:var(--ink-2);font:inherit;font-size:15px;cursor:pointer;
+  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease);
+  font-family:var(--serif);letter-spacing:.06em}
+.answers button:hover{background:var(--paper)}
+.answers .again:hover{border-color:var(--again);color:var(--again)}
+.answers .got:hover{border-color:var(--ok);color:var(--ok)}
+.hint{text-align:center;margin-top:16px;font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.hint kbd{font:inherit;border:1px solid var(--rule);border-radius:3px;padding:0 5px;margin:0 2px}
+
+/* ── stat strip ─────────────────────────────────────────── */
+.strip{display:flex;margin:0 0 34px;border-top:1px solid var(--rule-2);
+  border-bottom:1px solid var(--rule-2)}
+.strip div{flex:1;padding:15px 6px;text-align:center;position:relative}
+.strip div+div::before{content:"";position:absolute;left:0;top:26%;bottom:26%;width:1px;
+  background:var(--rule-2)}
+.strip b{display:block;font-family:var(--serif);font-size:23px;font-weight:500;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.strip span{font-size:11.5px;color:var(--ink-3);letter-spacing:.08em}
+
+/* ── seal / done ────────────────────────────────────────── */
+.done{text-align:center;padding:66px 20px 40px}
+.seal{width:96px;height:96px;margin:0 auto 26px;border:2.5px solid var(--seal);border-radius:6px;
+  display:grid;place-items:center;color:var(--seal);font-family:var(--serif);font-size:25px;
+  line-height:1.15;letter-spacing:.08em;transform:rotate(-4deg);opacity:.92;
+  animation:stamp .55s var(--ease) both}
+.seal span{display:block}
+@keyframes stamp{0%{opacity:0;transform:rotate(-4deg) scale(1.5)}60%{opacity:.92;transform:rotate(-4deg) scale(.96)}100%{opacity:.92;transform:rotate(-4deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.seal{animation:none}}
+.done h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 8px;letter-spacing:.05em}
+.done p{color:var(--ink-3);font-size:14px;margin:0}
+
+/* ── library ────────────────────────────────────────────── */
+.book{border-bottom:1px solid var(--rule-2)}
+.book:last-child{border-bottom:0}
+.book > summary{list-style:none;cursor:pointer;padding:15px 4px;display:flex;align-items:center;
+  gap:13px;transition:opacity .2s var(--ease)}
+.book > summary::-webkit-details-marker{display:none}
+.book > summary:hover{opacity:.72}
+.spine{width:4px;height:26px;border-radius:2px;background:var(--cloth);flex:none}
+.book .bt{font-family:var(--serif);font-size:15.5px;flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.book .bn{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex:none}
+.book .items{padding:2px 0 16px 17px}
+.book .item{padding:11px 0;border-top:1px dotted var(--rule)}
+.book .item:first-child{border-top:0}
+.book .q{font-family:var(--serif);font-size:15px;line-height:1.8;color:var(--ink-2);
+  word-break:break-word}
+.book .sub{font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:99px;margin-left:7px;
+  border:1px solid var(--rule);color:var(--ink-3);letter-spacing:.04em}
+
+/* ── import ─────────────────────────────────────────────── */
+.step{display:flex;gap:15px;padding:19px 0;border-bottom:1px solid var(--rule-2)}
+.step:last-of-type{border-bottom:0}
+.step .n{width:23px;height:23px;flex:none;border-radius:99px;border:1px solid var(--rule);
+  display:grid;place-items:center;font-size:12px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;margin-top:2px}
+.step h3{margin:0 0 5px;font-size:15px;font-weight:600}
+.step p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.75}
+.blet{display:inline-block;margin-top:11px;padding:9px 17px;border:1px solid var(--seal);
+  border-radius:2px;color:var(--seal);text-decoration:none;font-size:14px;
+  font-family:var(--serif);letter-spacing:.06em;cursor:grab;background:var(--paper-2)}
+.blet:active{cursor:grabbing}
+.drop{border:1px dashed var(--rule);border-radius:3px;padding:34px 22px;text-align:center;
+  cursor:pointer;transition:border-color .2s var(--ease),background .2s var(--ease);margin-top:8px}
+.drop:hover,.drop.over{border-color:var(--seal);background:var(--paper-2)}
+.drop b{display:block;font-family:var(--serif);font-size:15.5px;font-weight:500;margin-bottom:5px}
+.drop span{font-size:12.5px;color:var(--ink-3)}
+.log{font:12px/1.75 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--ink-2);
+  white-space:pre-wrap;margin-top:18px;padding:13px 15px;background:var(--paper-2);
+  border:1px solid var(--rule-2);border-radius:3px;max-height:180px;overflow:auto}
+.log:empty{display:none}
+.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
+.tools button{padding:8px 14px;border-radius:2px;border:1px solid var(--rule);background:none;
+  color:var(--ink-3);font:inherit;font-size:13px;cursor:pointer;transition:all .2s var(--ease)}
+.tools button:hover{color:var(--ink);border-color:var(--ink-3)}
+.tools button.danger:hover{color:var(--seal);border-color:var(--seal)}
+
+.blank{text-align:center;padding:64px 20px}
+.blank h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 9px}
+.blank p{color:var(--ink-3);font-size:14px;margin:0 0 20px}
+.blank button{padding:10px 20px;border:1px solid var(--rule);border-radius:2px;background:none;
+  color:var(--ink);font:inherit;font-size:14px;font-family:var(--serif);letter-spacing:.06em;
+  cursor:pointer}
+.blank button:hover{border-color:var(--seal);color:var(--seal)}
+h2.sec{font-family:var(--serif);font-size:16px;font-weight:500;margin:0 0 4px;letter-spacing:.04em}
+p.sub{font-size:13px;color:var(--ink-3);margin:0 0 22px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <span class="mark">回读</span>
+  <nav>
+    <button data-view="review" aria-current="true">今日</button>
+    <button data-view="library">书架</button>
+    <button data-view="import">导入</button>
+  </nav>
+</div></header>
+<main><div id="strip"></div><div id="view"></div></main>
+
+<script type="module">
+/* ── src/schema.mjs ─────────────── */
+/**
+ * The one canonical shape every importer must produce.
+ *
+ * Deliberately flat and source-agnostic: WeRead, Kindle and Cubox all collapse into this,
+ * so the review engine never learns where a card came from.
+ *
+ * Review state is NOT part of an imported card. Import stays pure so a re-import can never
+ * reset a card's scheduling — the store merges by `id` and keeps whatever state it already had.
+ */
+
+/**
+ * @typedef {Object} Card
+ * @property {string}  id          stable across re-imports; dedup key
+ * @property {'weread'|'kindle'|'cubox'} source
+ * @property {string}  bookId
+ * @property {string}  bookTitle
+ * @property {string}  bookAuthor  '' when the source does not carry it
+ * @property {?string} chapter     chapter/section title, null for book-level notes
+ * @property {?number} chapterIdx  ordering within the book, null when unknown
+ * @property {string}  text        the highlighted passage; '' only for standalone notes
+ * @property {?string} note        the reader's own words, null when they only highlighted
+ * @property {number}  createdAt   epoch SECONDS (not ms) — every source gets normalised to this
+ */
+
+/** Fields a card must have to be storable. */
+const REQUIRED = ['id', 'source', 'bookId', 'bookTitle', 'createdAt'];
+
+/**
+ * A card is worth reviewing only if it carries something to read back.
+ * A note with no highlight is still valid: those are chapter-level thoughts.
+ */
+function isReviewable(card) {
+  return Boolean((card.text && card.text.trim()) || (card.note && card.note.trim()));
+}
+function validate(card) {
+  const problems = [];
+  for (const f of REQUIRED) {
+    if (card[f] === undefined || card[f] === null || card[f] === '') problems.push(`missing ${f}`);
+  }
+  if (typeof card.createdAt !== 'number' || !Number.isFinite(card.createdAt)) {
+    problems.push('createdAt must be a finite number');
+  } else if (card.createdAt > 4102444800) {
+    // 2100-01-01 in seconds; catches a source that handed us milliseconds
+    problems.push('createdAt looks like milliseconds, expected seconds');
+  }
+  if (!isReviewable(card)) problems.push('neither text nor note has content');
+  return problems;
+}
+
+/**
+ * Merge freshly imported cards into existing ones, preserving review state.
+ *
+ * Returns `changed` as well as `cards`: the caller must persist `changed`, never the raw
+ * incoming list. Writing the incoming cards is a data-loss bug — they carry no review state,
+ * so a re-import silently resets every card's schedule. That bug shipped once; the `changed`
+ * array exists so the correct thing is also the easy thing.
+ */
+function mergeById(existing, incoming) {
+  const byId = new Map(existing.map((c) => [c.id, c]));
+  const changed = [];
+  let added = 0;
+  let updated = 0;
+  for (const c of incoming) {
+    const prev = byId.get(c.id);
+    if (!prev) {
+      byId.set(c.id, c);
+      changed.push(c);
+      added++;
+    } else {
+      // content may have been edited at the source; review state is ours and survives
+      const { review, ...rest } = prev;
+      const merged = { ...rest, ...c };
+      if (review !== undefined) merged.review = review;
+      byId.set(c.id, merged);
+      if (JSON.stringify(prev) !== JSON.stringify(merged)) {
+        changed.push(merged);
+        updated++;
+      }
+    }
+  }
+  return { cards: [...byId.values()], changed, added, updated };
+}
+
+/* ── src/import-weread.mjs ─────────────── */
+/**
+ * WeRead importer.
+ *
+ * Accepts the shape produced by tools/weread_dump.py: one JSON blob per book, holding the
+ * `review/list` response for that book. Written against the real 94-entry fixture pulled from
+ * Allen's own account on 2026-09-06, not against a guess at the format.
+ *
+ * Observed in that fixture and handled here:
+ *   - type 1 = a highlight with the reader's note attached (92 of 94)
+ *   - type 4 = a book-level review: no abstract, no chapter (2 of 94)
+ *   - `abstract` is the highlighted passage, `content` is the reader's own words
+ *   - createTime is already epoch SECONDS
+ *   - reviewId is unique across the whole fixture, so it is the dedup key
+ */
+
+/** WeRead wraps each entry as {review: {...}} in some responses and bare in others. */
+function unwrap(entry) {
+  return entry && entry.review ? entry.review : entry;
+}
+
+function clean(s) {
+  if (typeof s !== 'string') return '';
+  // WeRead pads abstracts with leading/trailing whitespace and stray full-width spaces
+  return s.replace(/　/g, ' ').trim();
+}
+
+/**
+ * @param {object} blob one parsed weread_<bookId>.json
+ * @returns {{cards: import('./schema.mjs').Card[], skipped: number}}
+ */
+function importWeReadBook(blob) {
+  const entries = blob?.reviews?.reviews ?? [];
+  const fallbackTitle = blob?.title ?? '';
+  const fallbackBookId = blob?.bookId != null ? String(blob.bookId) : '';
+  const cards = [];
+  let skipped = 0;
+
+  for (const raw of entries) {
+    const r = unwrap(raw);
+    if (!r || !r.reviewId) {
+      skipped++;
+      continue;
+    }
+    const book = r.book ?? {};
+    const text = clean(r.abstract);
+    const note = clean(r.content);
+    if (!text && !note) {
+      skipped++;
+      continue;
+    }
+    cards.push({
+      id: `weread:${r.reviewId}`,
+      source: 'weread',
+      bookId: String(r.bookId ?? book.bookId ?? fallbackBookId),
+      bookTitle: book.title ?? fallbackTitle,
+      bookAuthor: book.author ?? '',
+      chapter: clean(r.chapterTitle) || null,
+      chapterIdx: Number.isInteger(r.chapterIdx) ? r.chapterIdx : null,
+      text,
+      note: note || null,
+      createdAt: Number(r.createTime) || 0,
+    });
+  }
+  return { cards, skipped };
+}
+
+/**
+ * Flatten whatever the reader dropped in into a flat list of per-book blobs.
+ *
+ * Two real shapes exist and both are supported, because both are things a reader will actually
+ * hand us:
+ *   1. the bookmarklet's single file  {source, exportedAt, books: [ {...}, {...} ]}
+ *   2. one file per book              {bookId, title, bookmarks, reviews}
+ */
+function flatten(blobs) {
+  const out = [];
+  for (const b of blobs) {
+    if (!b || typeof b !== 'object') continue;
+    if (Array.isArray(b.books)) out.push(...b.books.filter((x) => x && typeof x === 'object'));
+    else out.push(b);
+  }
+  return out;
+}
+
+/** Import many blobs at once, deduping on id. Accepts either shape, mixed freely. */
+function importWeRead(blobs) {
+  const seen = new Map();
+  let skipped = 0;
+  for (const b of flatten(blobs)) {
+    const res = importWeReadBook(b);
+    skipped += res.skipped;
+    for (const c of res.cards) seen.set(c.id, c);
+  }
+  // newest first: that is the order a reader expects when they first open the library
+  const cards = [...seen.values()].sort((a, b) => b.createdAt - a.createdAt);
+  return { cards, skipped };
+}
+
+/* ── src/review.mjs ─────────────── */
+/**
+ * The review engine: which cards come back today, and what happens when the reader answers.
+ *
+ * Deliberately small. Two buttons only — 记住了 / 再来 — because the whole product promise is
+ * "a few old highlights come back each day", not "grade yourself 0-5 on recall quality".
+ *
+ * Everything is pure and deterministic: no Date.now() inside, no randomness. `now` is always
+ * passed in, so the same inputs always produce the same batch and the tests never flake.
+ * Time is epoch SECONDS everywhere, matching Card.createdAt.
+ */
+const DAY = 86400;
+
+/**
+ * Intervals in days. Roughly doubling, which is what spaced repetition needs; the exact ladder
+ * matters far less than showing up daily, so it is a plain table rather than a tuned formula.
+ */
+const STEPS = [1, 3, 7, 16, 35, 75, 160, 340];
+
+/** @typedef {{interval: number, due: number, reps: number, lapses: number}} ReviewState */
+function isNew(card) {
+  return !card.review;
+}
+function isDue(card, now) {
+  return Boolean(card.review) && card.review.due <= now;
+}
+
+/** Start of the UTC day containing `now`, so a card due "today" stays due all day. */
+function dayStart(now) {
+  return Math.floor(now / DAY) * DAY;
+}
+
+/**
+ * Answer a card.
+ * @param {object} card
+ * @param {'got'|'again'} outcome  got = 记住了, again = 再来
+ * @param {number} now epoch seconds
+ */
+function grade(card, outcome, now) {
+  if (outcome !== 'got' && outcome !== 'again') {
+    throw new TypeError(`unknown outcome: ${outcome}`);
+  }
+  const prev = card.review ?? { interval: 0, due: 0, reps: 0, lapses: 0 };
+  let interval;
+  let lapses = prev.lapses;
+
+  if (outcome === 'again') {
+    // back to the front of the ladder; the card returns tomorrow
+    interval = STEPS[0];
+    lapses += 1;
+  } else {
+    const i = STEPS.indexOf(prev.interval);
+    interval = i === -1 ? STEPS[0] : STEPS[Math.min(i + 1, STEPS.length - 1)];
+  }
+
+  return {
+    ...card,
+    review: {
+      interval,
+      due: dayStart(now) + interval * DAY,
+      reps: prev.reps + 1,
+      lapses,
+      // when this card was last answered. Without it the daily cap is unenforceable:
+      // a finished batch would simply refill with more new cards forever.
+      last: now,
+    },
+  };
+}
+
+/** Was this card answered at any point during the UTC day containing `now`? */
+function answeredToday(card, now) {
+  return Boolean(card.review) && (card.review.last ?? 0) >= dayStart(now);
+}
+
+/**
+ * Today's batch: everything overdue first (oldest due first, so nothing rots), then new cards
+ * up to `maxNew`. New cards are taken oldest-highlight-first, so the reader meets their own
+ * back catalogue in the order they built it.
+ *
+ * @param {object[]} cards
+ * @param {{now: number, size?: number, maxNew?: number}} opts
+ */
+function pickDaily(cards, { now, size = 10, maxNew = 5 }) {
+  if (!Number.isFinite(now)) throw new TypeError('now must be epoch seconds');
+
+  // Budgets are per DAY, not per call. Calling this again after finishing a batch must not
+  // hand out a fresh allowance — otherwise "a few highlights a day" becomes an endless feed.
+  const doneToday = cards.filter((c) => answeredToday(c, now));
+  const newToday = doneToday.filter((c) => c.review.reps === 1).length;
+  const slots = Math.max(0, size - doneToday.length);
+  const newSlots = Math.max(0, maxNew - newToday);
+  if (slots === 0) return [];
+
+  const due = cards
+    .filter((c) => isDue(c, now) && !answeredToday(c, now))
+    .sort((a, b) => a.review.due - b.review.due || String(a.id).localeCompare(String(b.id)));
+
+  const fresh = cards
+    .filter(isNew)
+    .sort((a, b) => a.createdAt - b.createdAt || String(a.id).localeCompare(String(b.id)));
+
+  const batch = due.slice(0, slots);
+  const room = Math.max(0, Math.min(slots - batch.length, newSlots));
+  return batch.concat(fresh.slice(0, room));
+}
+
+/** Numbers for the dashboard the briefing asks for. */
+function stats(cards, now) {
+  const total = cards.length;
+  const newCount = cards.filter(isNew).length;
+  const dueCount = cards.filter((c) => isDue(c, now)).length;
+  const reviewed = total - newCount;
+  const lapses = cards.reduce((n, c) => n + (c.review?.lapses ?? 0), 0);
+  return { total, new: newCount, due: dueCount, reviewed, lapses };
+}
+
+/* ── app/store.mjs ─────────────── */
+/**
+ * Local-first storage. IndexedDB only — nothing is sent anywhere, there is no server.
+ *
+ * One object store keyed by card id, so a re-import merges in place and review state
+ * (which lives on the same record) is never clobbered. See schema.mergeById.
+ */
+
+const DB_NAME = 'w3-highlights';
+const DB_VERSION = 1;
+const STORE = 'cards';
+
+let dbPromise = null;
+
+function open() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        const os = db.createObjectStore(STORE, { keyPath: 'id' });
+        os.createIndex('due', 'review.due');
+        os.createIndex('createdAt', 'createdAt');
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return dbPromise;
+}
+
+function tx(mode, fn) {
+  return open().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        const t = db.transaction(STORE, mode);
+        const store = t.objectStore(STORE);
+        let out;
+        try {
+          out = fn(store);
+        } catch (e) {
+          reject(e);
+          return;
+        }
+        t.oncomplete = () => resolve(out);
+        t.onerror = () => reject(t.error);
+        t.onabort = () => reject(t.error);
+      }),
+  );
+}
+async function allCards() {
+  const rows = await tx('readonly', (s) => {
+    const r = s.getAll();
+    return new Promise((res, rej) => {
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  });
+  return await rows;
+}
+async function putAll(cards) {
+  await tx('readwrite', (s) => {
+    for (const c of cards) s.put(c);
+  });
+  return cards.length;
+}
+async function putOne(card) {
+  await tx('readwrite', (s) => s.put(card));
+  return card;
+}
+async function clearAll() {
+  await tx('readwrite', (s) => s.clear());
+}
+async function exportJson() {
+  const cards = await allCards();
+  return JSON.stringify({ exportedAt: Math.floor(Date.now() / 1000), cards }, null, 2);
+}
+
+/* ── app/ui.mjs ─────────────── */
+/**
+ * Small presentation helpers. Kept out of index.html so they can be reasoned about and,
+ * later, tested — they carry the judgement calls that make the app feel considered.
+ */
+
+/** Book-cloth colours. Hand-picked and muted rather than a free hue rotation, so no two
+ *  books ever clash and none of them shouts. Index is a stable hash of the bookId. */
+const CLOTH = [
+  { h: 18, s: 42, l: 46 }, // 赭石
+  { h: 148, s: 22, l: 38 }, // 松绿
+  { h: 210, s: 28, l: 44 }, // 靛青
+  { h: 38, s: 48, l: 45 }, // 秋香
+  { h: 350, s: 30, l: 46 }, // 绛
+  { h: 265, s: 20, l: 46 }, // 藕荷
+  { h: 96, s: 24, l: 38 }, // 竹青
+  { h: 5, s: 34, l: 42 }, // 檀
+  { h: 190, s: 26, l: 40 }, // 天水
+  { h: 45, s: 30, l: 40 }, // 枯黄
+];
+function clothOf(bookId) {
+  let h = 0;
+  const s = String(bookId ?? '');
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return CLOTH[h % CLOTH.length];
+}
+function clothCss(bookId, { l, a } = {}) {
+  const c = clothOf(bookId);
+  const light = l ?? c.l;
+  return a === undefined ? `hsl(${c.h} ${c.s}% ${light}%)` : `hsl(${c.h} ${c.s}% ${light}% / ${a})`;
+}
+
+const D = 86400;
+
+/**
+ * How long ago, said the way a person would say it.
+ * The "N 年前的今天" case is the whole reason this exists: it is the line that makes a reader
+ * stop and feel the distance, and a bare 2022-08-06 never does that.
+ */
+function agoText(then, now) {
+  if (!then) return '';
+  const days = Math.floor((now - then) / D);
+  if (days < 0) return '刚刚';
+  if (days === 0) return '今天';
+  if (days === 1) return '昨天';
+  if (days < 30) return `${days} 天前`;
+
+  const a = new Date(then * 1000);
+  const b = new Date(now * 1000);
+  let months = (b.getUTCFullYear() - a.getUTCFullYear()) * 12 + (b.getUTCMonth() - a.getUTCMonth());
+  if (b.getUTCDate() < a.getUTCDate()) months--;
+
+  const sameDayOfYear = a.getUTCMonth() === b.getUTCMonth() && a.getUTCDate() === b.getUTCDate();
+  const years = Math.floor(months / 12);
+  if (years >= 1 && sameDayOfYear) return `${years} 年前的今天`;
+  if (years >= 1) {
+    const rem = months % 12;
+    return rem ? `${years} 年 ${rem} 个月前` : `${years} 年前`;
+  }
+  return `${months} 个月前`;
+}
+
+/** 2022-08-06 -> 2022 年 8 月 */
+function monthText(ts) {
+  const d = new Date(ts * 1000);
+  return `${d.getUTCFullYear()} 年 ${d.getUTCMonth() + 1} 月`;
+}
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+/**
+ * Chinese text that opens with a quotation or bracket looks indented against a flush left rule.
+ * Pulling that first glyph into the margin is the kind of detail nobody names but everybody sees.
+ */
+const HANGING = new Set(['「', '『', '“', '‘', '（', '《', '〈', '"', "'"]);
+function hangsFirstGlyph(text) {
+  return HANGING.has(String(text ?? '')[0]);
+}
+
+/** 92 -> "92"; 1234 -> "1,234". Tabular numerals plus grouping keeps the stat row calm. */
+function num(n) {
+  return Number(n ?? 0).toLocaleString('en-US');
+}
+
+/* ── app ─────────────── */
+/* aliased imports */
+const calcStats = stats;
+
+const $ = (s, r = document) => r.querySelector(s);
+const view = $('#view');
+const now = () => Math.floor(Date.now() / 1000);
+
+let cards = [];
+let batch = [];
+let at = 0;
+let where = 'review';
+let busy = false;
+
+async function boot(){ cards = await allCards(); render(); }
+
+function render(){
+  const t = now();
+  const s = calcStats(cards, t);
+  const left = pickDaily(cards, { now: t, size: 10, maxNew: 5 }).length;
+  // The 今日 screen deliberately shows no numbers: the dots already say where you are, and a
+  // stat row above the card both crowds it off a laptop screen and turns reading into a metric.
+  // The counts live on 书架, where looking at your collection is the point.
+  $('#strip').innerHTML = (cards.length && where !== 'review') ? `<div class="strip">${[
+    ['今日待读', left], ['已回顾', s.reviewed], ['未读过', s.new], ['全部', s.total],
+  ].map(([k,v]) => `<div><b>${num(v)}</b><span>${k}</span></div>`).join('')}</div>` : '';
+  for (const b of document.querySelectorAll('nav button'))
+    b.setAttribute('aria-current', String(b.dataset.view === where));
+  ({ review: drawReview, library: drawLibrary, import: drawImport })[where]();
+}
+
+/* ── 今日 ─────────────────────────────────────────────── */
+function drawReview(){
+  if (!cards.length){
+    view.innerHTML = `<div class="blank"><h2>书架还是空的</h2>
+      <p>把微信读书里划过的线接过来，它们才有机会再见到你。</p>
+      <button id="go">去导入</button></div>`;
+    $('#go').onclick = () => { where = 'import'; render(); };
+    return;
+  }
+  if (!batch.length || at >= batch.length){
+    batch = pickDaily(cards, { now: now(), size: 10, maxNew: 5 });
+    at = 0;
+  }
+  if (!batch.length){
+    view.innerHTML = `<div class="done">
+      <div class="seal"><span>今日</span><span>已毕</span></div>
+      <h2>今天读完了</h2><p>明天会有新的一批等你。</p></div>`;
+    return;
+  }
+  const c = batch[at];
+  const cloth = clothCss(c.bookId);
+  const seen = isNew(c) ? '第一次见' : `第 ${c.review.reps + 1} 次见`;
+  view.innerHTML = `
+    <div class="dots">${batch.map((_, i) =>
+      `<i class="${i < at ? 'done' : i === at ? 'here' : ''}"></i>`).join('')}</div>
+    <article class="sheet" style="--cloth:${cloth}">
+      <div class="meta">
+        <span class="title">${esc(c.bookTitle)}</span>
+        ${c.bookAuthor ? esc(c.bookAuthor) + '<span class="sep">·</span>' : ''}
+        ${c.chapter ? esc(c.chapter) : '整本书'}
+        <br>
+        <span class="ago">${agoText(c.createdAt, now())}</span>
+        <span class="sep">·</span>${monthText(c.createdAt)}划下
+        <span class="sep">·</span>${seen}
+      </div>
+      ${c.text ? `<blockquote class="${hangsFirstGlyph(c.text) ? 'hang' : ''}">${esc(c.text)}</blockquote>` : ''}
+      ${c.note ? `<div class="reveal" data-open="false" id="rv">
+          <button type="button"><span class="chev">›</span>你当时写了一句话</button>
+          <div class="body"><div><div class="note">${esc(c.note)}</div></div></div>
+        </div>` : ''}
+      <div class="answers">
+        <button class="again" data-a="again">再来</button>
+        <button class="got" data-a="got">记住了</button>
+      </div>
+    </article>
+    <div class="hint"><kbd>J</kbd> 再来 <kbd>K</kbd> 记住了 <kbd>空格</kbd> 展开当时的想法</div>`;
+  const rv = $('#rv');
+  if (rv) rv.querySelector('button').onclick = () => toggleNote();
+  for (const b of view.querySelectorAll('[data-a]')) b.onclick = () => answer(b.dataset.a);
+}
+
+function toggleNote(){
+  const rv = $('#rv');
+  if (!rv) return;
+  rv.dataset.open = rv.dataset.open === 'true' ? 'false' : 'true';
+}
+
+async function answer(outcome){
+  if (busy) return;
+  busy = true;
+  const sheet = $('.sheet');
+  if (sheet) sheet.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
+  const g = grade(batch[at], outcome, now());
+  await putOne(g);
+  cards = cards.map(x => x.id === g.id ? g : x);
+  await new Promise(r => setTimeout(r, 190));
+  at++;
+  busy = false;
+  render();
+}
+
+/* ── 书架 ─────────────────────────────────────────────── */
+function drawLibrary(){
+  if (!cards.length){
+    view.innerHTML = `<div class="blank"><h2>还没有东西</h2><p>导入之后，这里按书排列。</p></div>`;
+    return;
+  }
+  const byBook = new Map();
+  for (const c of cards){
+    if (!byBook.has(c.bookId)) byBook.set(c.bookId, { title: c.bookTitle, items: [] });
+    byBook.get(c.bookId).items.push(c);
+  }
+  const books = [...byBook.entries()]
+    .map(([id, b]) => ({ id, ...b, items: b.items.sort((x, y) => y.createdAt - x.createdAt) }))
+    .sort((a, b) => b.items.length - a.items.length);
+  view.innerHTML = `<h2 class="sec">书架</h2>
+    <p class="sub">${books.length} 本书，${num(cards.length)} 条划线。点开看某一本。</p>
+    ${books.map(b => `
+      <details class="book" style="--cloth:${clothCss(b.id)}">
+        <summary><i class="spine"></i><span class="bt">${esc(b.title)}</span>
+          <span class="bn">${b.items.length}</span></summary>
+        <div class="items">${b.items.map(c => `
+          <div class="item">
+            <div class="q">${esc(c.text || c.note)}</div>
+            <div class="sub">${c.chapter ? esc(c.chapter) + ' · ' : ''}${agoText(c.createdAt, now())}
+              ${isNew(c) ? '<span class="tag">没读过</span>'
+                : `<span class="tag">间隔 ${c.review.interval} 天</span>`}</div>
+          </div>`).join('')}</div>
+      </details>`).join('')}`;
+}
+
+/* ── 导入 ─────────────────────────────────────────────── */
+async function drawImport(){
+  const blet = "javascript:(async()%3D%3E%7Bconst%20TAG%3D'%5B%E5%9B%9E%E8%AF%BB%5D'%3Bif(!location.hostname.endsWith('weread.qq.com'))%7Balert('%E8%AF%B7%E5%85%88%E6%89%93%E5%BC%80%20weread.qq.com%20%E5%B9%B6%E7%99%BB%E5%BD%95%EF%BC%8C%E7%84%B6%E5%90%8E%E5%86%8D%E7%82%B9%E8%BF%99%E4%B8%AA%E4%B9%A6%E7%AD%BE%E3%80%82')%3Breturn%3B%7Dconst%20box%3Ddocument.createElement('div')%3Bbox.style.cssText%3D'position%3Afixed%3Bz-index%3A2147483647%3Bright%3A18px%3Bbottom%3A18px%3Bmax-width%3A320px%3Bpadding%3A14px%2016px%3B'%2B'background%3A%231e1b16%3Bcolor%3A%23ece6dc%3Bborder-radius%3A12px%3Bfont%3A14px%2F1.6%20system-ui%2Csans-serif%3B'%2B'box-shadow%3A0%208px%2030px%20rgba(0%2C0%2C0%2C.35)%3Bwhite-space%3Apre-wrap'%3Bdocument.body.appendChild(box)%3Bconst%20say%3D(s)%3D%3E%7Bbox.textContent%3DTAG%2B'%20'%2Bs%3B%7D%3Bconst%20get%3Dasync(u)%3D%3E%7Bconst%20r%3Dawait%20fetch(u%2C%7Bcredentials%3A'include'%2Cheaders%3A%7BAccept%3A'application%2Fjson'%7D%7D)%3Bif(!r.ok)throw%20new%20Error('HTTP%20'%2Br.status)%3Breturn%20r.json()%3B%7D%3Btry%7Bsay('%E6%AD%A3%E5%9C%A8%E8%AF%BB%E5%8F%96%E4%BD%A0%E7%9A%84%E7%AC%94%E8%AE%B0%E5%88%97%E8%A1%A8%E2%80%A6')%3Bconst%20all%3Dawait%20get('%2Fweb%2Freview%2Flist%3FlistType%3D11%26mine%3D1%26synckey%3D0')%3Bconst%20books%3Dnew%20Map()%3Bfor(const%20it%20of%20all.reviews%7C%7C%5B%5D)%7Bconst%20rv%3Dit.review%7C%7Cit%3Bconst%20bk%3Drv.book%7C%7C%7B%7D%3Bif(bk.bookId)books.set(bk.bookId%2Cbk.title%7C%7C'')%3B%7Dif(!books.size)%7Bsay('%E6%B2%A1%E6%9C%89%E6%89%BE%E5%88%B0%E4%BB%BB%E4%BD%95%E5%88%92%E7%BA%BF%E3%80%82%5Cn%E7%A1%AE%E8%AE%A4%E8%BF%99%E6%98%AF%E4%BD%A0%E8%87%AA%E5%B7%B1%E7%9A%84%E8%B4%A6%E5%8F%B7%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%9C%A8%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E9%87%8C%E5%88%92%E8%BF%87%E7%BA%BF%E3%80%82')%3BsetTimeout(()%3D%3Ebox.remove()%2C8000)%3Breturn%3B%7Dconst%20out%3D%5B%5D%3Blet%20i%3D0%3Bfor(const%5BbookId%2Ctitle%5Dof%20books)%7Bi%2B%2B%3Bsay(%60%E6%AD%A3%E5%9C%A8%E5%AF%BC%E5%87%BA%20%24%7Bi%7D%2F%24%7Bbooks.size%7D%EF%BC%9A%24%7Btitle.slice(0%2C%2018)%7D%60)%3Blet%20bookmarks%3Dnull%3Blet%20reviews%3Dnull%3Btry%7Bbookmarks%3Dawait%20get('%2Fweb%2Fbook%2Fbookmarklist%3FbookId%3D'%2BencodeURIComponent(bookId))%3B%7Dcatch(e)%7B%7Dtry%7Breviews%3Dawait%20get('%2Fweb%2Freview%2Flist%3FbookId%3D'%2BencodeURIComponent(bookId)%2B'%26listType%3D11%26mine%3D1%26synckey%3D0'%2C)%3B%7Dcatch(e)%7B%7Dout.push(%7BbookId%2Ctitle%2Cbookmarks%2Creviews%7D)%3Bawait%20new%20Promise((r)%3D%3EsetTimeout(r%2C250))%3B%7Dconst%20payload%3DJSON.stringify(%7Bsource%3A'weread'%2CexportedAt%3AMath.floor(Date.now()%2F1000)%2Cbooks%3Aout%7D%2Cnull%2C0%2C)%3Bconst%20name%3D%60weread-%24%7Bnew%20Date().toISOString().slice(0%2C%2010)%7D.json%60%3Blet%20saved%3Dfalse%3Btry%7Bconst%20url%3DURL.createObjectURL(new%20Blob(%5Bpayload%5D%2C%7Btype%3A'application%2Fjson'%7D))%3Bconst%20a%3Ddocument.createElement('a')%3Ba.href%3Durl%3Ba.download%3Dname%3Bdocument.body.appendChild(a)%3Ba.click()%3Ba.remove()%3BsetTimeout(()%3D%3EURL.revokeObjectURL(url)%2C4000)%3Bsaved%3Dtrue%3B%7Dcatch(e)%7Bsaved%3Dfalse%3B%7Dif(saved)%7Bsay(%60%E5%AF%BC%E5%87%BA%E5%AE%8C%E6%88%90%EF%BC%9A%24%7Bbooks.size%7D%20%E6%9C%AC%E4%B9%A6%E3%80%82%5Cn%E6%96%87%E4%BB%B6%20%24%7Bname%7D%20%E5%B7%B2%E5%AD%98%E5%88%B0%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E6%8A%8A%E5%AE%83%E6%8B%96%E8%BF%9B%E3%80%8C%E5%9B%9E%E8%AF%BB%E3%80%8D%E5%B0%B1%E8%A1%8C%E3%80%82%60)%3B%7Delse%7Btry%7Bawait%20navigator.clipboard.writeText(payload)%3Bsay(%60%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%A1%E4%BD%8F%E4%BA%86%E4%B8%8B%E8%BD%BD%E3%80%82%5Cn%E5%86%85%E5%AE%B9%E5%B7%B2%E5%A4%8D%E5%88%B6%E5%88%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%EF%BC%8C%E7%B2%98%E8%B4%B4%E4%BF%9D%E5%AD%98%E6%88%90%20%24%7Bname%7D%20%E5%86%8D%E6%8B%96%E8%BF%9B%E3%80%8C%E5%9B%9E%E8%AF%BB%E3%80%8D%E3%80%82%60)%3B%7Dcatch(e2)%7Bsay('%E5%AF%BC%E5%87%BA%E5%A4%B1%E8%B4%A5%EF%BC%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8C%E6%97%B6%E6%8C%A1%E4%BD%8F%E4%BA%86%E4%B8%8B%E8%BD%BD%E5%92%8C%E5%89%AA%E8%B4%B4%E6%9D%BF%E3%80%82%E8%AF%B7%E6%8D%A2%20Chrome%20%E6%88%96%20Edge%20%E5%86%8D%E8%AF%95%E3%80%82')%3B%7D%7DsetTimeout(()%3D%3Ebox.remove()%2C15000)%3B%7Dcatch(err)%7Bsay('%E5%87%BA%E9%94%99%E4%BA%86%EF%BC%9A'%2B(err%26%26err.message%3Ferr.message%3Aerr)%2B'%5Cn%E5%A4%9A%E5%8D%8A%E6%98%AF%E7%99%BB%E5%BD%95%E8%BF%87%E6%9C%9F%EF%BC%8C%E5%88%B7%E6%96%B0%E9%A1%B5%E9%9D%A2%E9%87%8D%E6%96%B0%E7%99%BB%E5%BD%95%E5%86%8D%E8%AF%95%E3%80%82')%3BsetTimeout(()%3D%3Ebox.remove()%2C12000)%3B%7D%7D)()%3B";
+  view.innerHTML = `<h2 class="sec">把微信读书的划线接过来</h2>
+    <p class="sub">全程在你自己的电脑上，没有服务器，没有账号，什么都不会上传。</p>
+    <div class="step"><div class="n">1</div><div>
+      <h3>把下面这个按钮拖到浏览器书签栏</h3>
+      <p>它是一段只在微信读书网页上运行的小脚本，不是插件，不用安装。
+        <br>看不到书签栏就按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> 打开。</p>
+      ${blet ? `<a class="blet" href="${esc(blet)}" draggable="true"
+        onclick="alert('别在这里点它。请把它拖到书签栏，然后到 weread.qq.com 上点。');return false">取回我的划线</a>`
+        : `<p style="color:var(--seal)">书签脚本没生成，先跑 node tools/build-bookmarklet.mjs</p>`}
+    </div></div>
+    <div class="step"><div class="n">2</div><div>
+      <h3>打开 weread.qq.com 并登录，点一下那个书签</h3>
+      <p>右下角会显示进度，跑完自动下载一个 <code>weread-日期.json</code>。书多的话要等十几秒。</p>
+    </div></div>
+    <div class="step"><div class="n">3</div><div>
+      <h3>把那个文件拖到下面</h3>
+      <div class="drop" id="drop">
+        <b>拖到这里，或点击选择</b>
+        <span>也接受 tools/weread_dump.py 生成的分本 json，可以多选</span>
+        <input type="file" id="file" multiple accept="application/json,.json" hidden>
+      </div>
+    </div></div>
+    <div class="log" id="log"></div>
+    <div class="tools">
+      <button id="exp">导出我的全部数据</button>
+      <button id="clr" class="danger">清空本机数据</button>
+    </div>`;
+  const drop = $('#drop'), file = $('#file');
+  drop.onclick = () => file.click();
+  file.onchange = () => ingest([...file.files]);
+  drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+  drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); ingest([...e.dataTransfer.files]); };
+  $('#exp').onclick = async () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([await exportJson()], { type:'application/json' }));
+    a.download = 'huidu-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+  $('#clr').onclick = async () => {
+    if (!confirm('清空这台电脑上保存的全部划线和回顾进度。不可撤销，确定吗？')) return;
+    await clearAll(); cards = []; batch = []; at = 0; render();
+  };
+}
+
+function log(s){ const el = $('#log'); if (el) el.textContent += s + '\n'; }
+
+async function ingest(files){
+  if (!files.length) return;
+  const blobs = [];
+  for (const f of files){
+    try { blobs.push(JSON.parse(await f.text())); }
+    catch { log(`✗ ${f.name} 不是合法 JSON，跳过`); }
+  }
+  const { cards: incoming, skipped } = importWeRead(blobs);
+  const good = incoming.filter(c => validate(c).length === 0);
+  const bad = incoming.length - good.length;
+  const { cards: merged, changed, added, updated } = mergeById(cards, good);
+  // persist `changed`, never `good` — `good` has no review state and would wipe every schedule
+  await putAll(changed);
+  cards = merged; batch = []; at = 0;
+  log(`读了 ${files.length} 个文件，解析出 ${incoming.length} 条`);
+  if (skipped) log(`跳过 ${skipped} 条（纯星级评分，没有正文）`);
+  if (bad) log(`✗ ${bad} 条格式不合规，没有导入`);
+  log(`新增 ${added} 条，更新 ${updated} 条，现在共 ${cards.length} 条`);
+  render();
+  drawImport().then(() => { const el = $('#log'); if (el) el.textContent =
+    `导入完成：现在共 ${cards.length} 条，来自 ${new Set(cards.map(c=>c.bookId)).size} 本书。点上面的「今日」开始。`; });
+}
+
+for (const b of document.querySelectorAll('nav button'))
+  b.onclick = () => { where = b.dataset.view; render(); };
+
+addEventListener('keydown', e => {
+  if (where !== 'review' || !batch.length || at >= batch.length) return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'j' || e.key === 'J') answer('again');
+  else if (e.key === 'k' || e.key === 'K') answer('got');
+  else if (e.key === ' ') { e.preventDefault(); toggleNote(); }
+});
+
+boot();
+</script>
+</body>
+</html>
