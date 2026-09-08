@@ -8,7 +8,7 @@
  *
  *   node tools/build.mjs
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -84,6 +84,24 @@ mkdirSync(DIST, { recursive: true });
 writeFileSync(join(DIST, 'index.html'), out, 'utf8');
 // GitHub Pages runs Jekyll by default and would eat files starting with an underscore
 writeFileSync(join(DIST, '.nojekyll'), '', 'utf8');
+
+// 5. PWA files are static, so they are copied rather than bundled. They must sit beside
+// index.html for the relative paths in the manifest and service worker to resolve.
+let copied = 0;
+for (const f of ['manifest.webmanifest', 'sw.js']) {
+  const src = join(ROOT, 'app', f);
+  if (!existsSync(src)) throw new Error(`missing ${f} — the app will not be installable`);
+  copyFileSync(src, join(DIST, f));
+  copied++;
+}
+const iconSrc = join(ROOT, 'app', 'icons');
+if (!existsSync(iconSrc)) throw new Error('app/icons missing — run: python tools/make_icons.py');
+mkdirSync(join(DIST, 'icons'), { recursive: true });
+for (const f of readdirSync(iconSrc)) {
+  copyFileSync(join(iconSrc, f), join(DIST, 'icons', f));
+  copied++;
+}
+console.log(`copied   ${copied} static files (manifest, service worker, icons)`);
 
 console.log(`modules  ${MODULES.length}`);
 console.log(`bundle   ${(bundled.length / 1024).toFixed(1)} KB`);

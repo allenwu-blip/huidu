@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>回读</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<!-- iOS ignores the manifest for home-screen behaviour and reads these instead -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="回读">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f7f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14120f" media="(prefers-color-scheme: dark)">
+<meta name="description" content="把你在微信读书里划过的线，每天推几条回来给你看。数据只存在你自己的浏览器里。">
 <style>
 :root{
   --paper:#f7f3ec; --paper-2:#fffdf9; --ink:#22201c; --ink-2:#5d564c; --ink-3:#918879;
@@ -422,6 +432,15 @@ addEventListener('keydown', e => {
   else if (e.key === 'k' || e.key === 'K') answer('got');
   else if (e.key === ' ') { e.preventDefault(); toggleNote(); }
 });
+
+// Offline support. Registered late and failure-tolerant on purpose: a reader whose browser
+// refuses service workers (private mode, older iOS) must still get a working app, so nothing
+// above depends on this succeeding.
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 
 boot();
 </script>

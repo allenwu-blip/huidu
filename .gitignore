@@ -12,6 +12,10 @@ dist/
 # 内部工作笔记：Windows 绝对路径、账号、踩坑记录，不适合公开仓库
 NOTES.md
 
+# 自动化过程中的截图：含登录态、登录二维码、编辑框里的私人内容。
+# 这个目录是 tools/web.py 建的，晚于本文件首次写成，第一次提交时差点混进公开仓库。
+shots/
+
 node_modules/
 .playwright-mcp/
 __pycache__/
