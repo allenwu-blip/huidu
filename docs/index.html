@@ -119,6 +119,14 @@ blockquote.hang{text-indent:-.62em}
 .answers button:hover{background:var(--paper)}
 .answers .again:hover{border-color:var(--again);color:var(--again)}
 .answers .got:hover{border-color:var(--ok);color:var(--ok)}
+/* The answer's consequence, said out loud. Without this the two buttons feel identical even
+   when they schedule differently — the card just vanishes either way, which is exactly what
+   a reader reported. One short line, long enough to read, gone before it gets tiring. */
+.echo{text-align:center;padding:26px 0 6px;font-family:var(--serif);font-size:15px;
+  letter-spacing:.08em;color:var(--ink-2);animation:echoIn .32s var(--ease) both}
+.echo b{font-weight:500;color:var(--cloth,var(--ink))}
+@keyframes echoIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.echo{animation:none}}
 .hint{text-align:center;margin-top:16px;font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
 .hint kbd{font:inherit;border:1px solid var(--rule);border-radius:3px;padding:0 5px;margin:0 2px}
 
@@ -449,7 +457,11 @@ function grade(card, outcome, now) {
     lapses += 1;
   } else {
     const i = STEPS.indexOf(prev.interval);
-    interval = i === -1 ? STEPS[0] : STEPS[Math.min(i + 1, STEPS.length - 1)];
+    // A card being seen for the first time has no interval to step up from. Starting it at
+    // STEPS[0] put it on exactly the same schedule as 再来, so on every new card the two
+    // buttons did the same thing — a reader noticed and said so. A first 记住了 therefore
+    // enters at STEPS[1], which is the first interval that actually means "not tomorrow".
+    interval = i === -1 ? STEPS[1] : STEPS[Math.min(i + 1, STEPS.length - 1)];
   }
 
   return {
@@ -769,11 +781,20 @@ async function answer(outcome){
   if (busy) return;
   busy = true;
   const sheet = $('.sheet');
-  if (sheet) sheet.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
   const g = grade(batch[at], outcome, now());
+  const d = g.review.interval;
+  if (sheet){
+    sheet.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
+    const echo = document.createElement('div');
+    echo.className = 'echo';
+    echo.style.setProperty('--cloth', clothCss(g.bookId));
+    echo.innerHTML = `${outcome === 'got' ? '记住了' : '再来'}　<b>${d === 1 ? '明天见' : d + ' 天后见'}</b>`;
+    sheet.parentNode.insertBefore(echo, sheet.nextSibling);
+  }
   await putOne(g);
   cards = cards.map(x => x.id === g.id ? g : x);
-  await new Promise(r => setTimeout(r, 190));
+  // long enough to read the line, short enough not to feel like waiting
+  await new Promise(r => setTimeout(r, sheet ? 640 : 120));
   at++;
   busy = false;
   render();

@@ -52,7 +52,11 @@ export function grade(card, outcome, now) {
     lapses += 1;
   } else {
     const i = STEPS.indexOf(prev.interval);
-    interval = i === -1 ? STEPS[0] : STEPS[Math.min(i + 1, STEPS.length - 1)];
+    // A card being seen for the first time has no interval to step up from. Starting it at
+    // STEPS[0] put it on exactly the same schedule as 再来, so on every new card the two
+    // buttons did the same thing — a reader noticed and said so. A first 记住了 therefore
+    // enters at STEPS[1], which is the first interval that actually means "not tomorrow".
+    interval = i === -1 ? STEPS[1] : STEPS[Math.min(i + 1, STEPS.length - 1)];
   }
 
   return {

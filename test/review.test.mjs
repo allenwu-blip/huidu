@@ -46,17 +46,31 @@ test('new cards arrive oldest highlight first', () => {
   }
 });
 
+// Reported by the reader: "记住了和再来,怎么效果都一样". He was right — a first 记住了 used to
+// schedule a new card at 1 day, exactly like 再来, so on every card he had never seen before
+// the two buttons did precisely the same thing. The old test asserted that broken behaviour.
+test('the two buttons must never schedule a new card the same way', () => {
+  const c = realCards()[0];
+  const got = grade(c, 'got', NOW);
+  const again = grade(c, 'again', NOW);
+  assert.notEqual(got.review.interval, again.review.interval);
+  assert.notEqual(got.review.due, again.review.due, '同一天到期就等于两个按钮没区别');
+  assert.ok(got.review.interval > again.review.interval, '记住了必须比再来推得远');
+  assert.equal(again.review.interval, 1, '再来 = 明天见');
+  assert.equal(got.review.interval, 3, '第一次记住了 = 三天后');
+});
+
 test('答对 walks up the ladder, 答错 drops back to one day', () => {
   const c = realCards()[0];
   let g = grade(c, 'got', NOW);
-  assert.equal(g.review.interval, 1);
+  assert.equal(g.review.interval, 3, 'a first 记住了 enters at the second step, not the first');
   assert.equal(g.review.reps, 1);
   assert.equal(g.review.lapses, 0);
 
   g = grade(g, 'got', NOW);
-  assert.equal(g.review.interval, 3);
-  g = grade(g, 'got', NOW);
   assert.equal(g.review.interval, 7);
+  g = grade(g, 'got', NOW);
+  assert.equal(g.review.interval, 16);
 
   g = grade(g, 'again', NOW);
   assert.equal(g.review.interval, 1, 'a miss sends it back to tomorrow');
@@ -151,12 +165,14 @@ test('tomorrow brings a fresh allowance', () => {
   let cards = realCards();
   cards = answerAll(cards, pickDaily(cards, { now: NOW, size: 10, maxNew: 5 }), 'got', NOW);
   assert.equal(pickDaily(cards, { now: NOW, size: 10, maxNew: 5 }).length, 0);
+  // Yesterday's 5 were graded 'got', which now schedules them 3 days out rather than 1, so
+  // tomorrow brings new cards only. That is the point of the fix: 记住了 buys you real distance.
   const next = pickDaily(cards, { now: NOW + DAY, size: 10, maxNew: 5 });
-  // yesterday's 5 were graded 'got' at interval 1, so they come due today; 5 new ones fill
-  // the rest of the size-10 budget.
-  assert.equal(next.length, 10);
-  assert.equal(next.filter((c) => !isNew(c)).length, 5, '昨天那 5 张回来了');
-  assert.equal(next.filter(isNew).length, 5, '再加 5 张没读过的');
+  assert.equal(next.length, 5);
+  assert.ok(next.every(isNew), '答对的卡三天内不该再出现');
+
+  const inThreeDays = pickDaily(cards, { now: NOW + 3 * DAY, size: 10, maxNew: 5 });
+  assert.equal(inThreeDays.filter((c) => !isNew(c)).length, 5, '三天后那 5 张才回来');
 });
 
 test('a card answered today never reappears the same day, even when overdue', () => {
