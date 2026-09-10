@@ -1,0 +1,89 @@
+/**
+ * Shared tokens — the same 纸与墨 palette as the web build.
+ *
+ * WXSS has no CSS custom properties on the App-level in older bases, and no media queries for
+ * dark mode that reach every page reliably, so the values are written out. Keep them in step
+ * with app/index.html by hand: two clients, one look.
+ */
+page {
+  background: #f7f3ec;
+  color: #22201c;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 32rpx;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  padding: 40rpx 44rpx 60rpx;
+}
+
+/* the reading sheet: the hero of the whole product */
+.sheet {
+  background: #fffdf9;
+  border: 1rpx solid #efe8dc;
+  border-radius: 6rpx;
+  padding: 52rpx 52rpx 44rpx;
+  position: relative;
+  box-shadow: 0 2rpx 4rpx rgba(34, 32, 28, 0.04), 0 20rpx 56rpx -24rpx rgba(34, 32, 28, 0.22);
+}
+.spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6rpx;
+  border-radius: 6rpx 0 0 6rpx;
+  opacity: 0.85;
+}
+
+.meta {
+  font-size: 24rpx;
+  line-height: 1.8;
+  color: #918879;
+  margin-bottom: 36rpx;
+}
+.meta .title {
+  display: block;
+  font-size: 30rpx;
+  color: #22201c;
+  font-weight: 500;
+  margin-bottom: 4rpx;
+}
+.sep {
+  opacity: 0.4;
+  margin: 0 10rpx;
+}
+
+/* Serif for the quote. The system serif is the only one available without shipping a font
+   file, and a mini program package is capped at 2 MB — a CJK face alone blows past that. */
+.quote {
+  font-family: "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", serif;
+  font-size: 38rpx;
+  line-height: 1.9;
+  color: #22201c;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.quote.hang {
+  text-indent: -0.62em;
+}
+
+.note {
+  border-left: 4rpx solid #e2dacd;
+  padding: 4rpx 0 4rpx 28rpx;
+  font-size: 30rpx;
+  line-height: 1.85;
+  color: #5d564c;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.muted {
+  color: #918879;
+  font-size: 24rpx;
+}
+.seal-red {
+  color: #a8352c;
+}

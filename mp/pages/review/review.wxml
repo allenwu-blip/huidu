@@ -1,0 +1,70 @@
+<view class="wrap">
+
+  <!-- nothing imported yet -->
+  <view wx:if="{{ready && empty}}" class="blank">
+    <view class="blank-h">书架还是空的</view>
+    <view class="blank-p">把微信读书里划过的线接过来，它们才有机会再见到你。</view>
+    <view class="blank-btn" bindtap="goImport">去导入</view>
+  </view>
+
+  <!-- today's batch finished -->
+  <view wx:elif="{{ready && done}}" class="done">
+    <view class="seal"><text>今日</text><text>已毕</text></view>
+    <view class="done-h">今天读完了</view>
+    <view class="done-p">明天会有新的一批等你。</view>
+  </view>
+
+  <!-- the card -->
+  <block wx:elif="{{ready && card}}">
+    <view class="dots">
+      <view
+        wx:for="{{batch}}"
+        wx:key="id"
+        class="dot {{index < at ? 'done' : (index === at ? 'here' : '')}}"
+      ></view>
+    </view>
+
+    <view wx:if="{{echo}}" class="echo" style="color:{{cloth}}">{{echo}}</view>
+
+    <view wx:else class="sheet">
+      <view class="spine" style="background:{{cloth}}"></view>
+
+      <!-- two separate views, not a \n inside <text>: WXML does not render an escaped
+           newline there, so the second line would silently run into the first -->
+      <view class="meta">
+        <text class="title">{{card.bookTitle}}</text>
+        <view class="line">
+          <text wx:if="{{card.bookAuthor}}">{{card.bookAuthor}}</text>
+          <text wx:if="{{card.bookAuthor}}" class="sep">·</text>
+          <text>{{card.chapter || '整本书'}}</text>
+        </view>
+        <view class="line">
+          <text style="color:{{cloth}}">{{ago}}</text>
+          <text class="sep">·</text>
+          <text>{{month}}划下</text>
+          <text class="sep">·</text>
+          <text>{{seen}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{card.text}}" class="quote {{hang ? 'hang' : ''}}">{{card.text}}</view>
+
+      <!-- the reveal: the reader's own past words, hidden until asked for -->
+      <view wx:if="{{card.note}}" class="reveal">
+        <view class="reveal-btn" bindtap="toggleNote" style="color:{{noteOpen ? cloth : '#918879'}}">
+          <text class="chev">{{noteOpen ? '⌄' : '›'}}</text>
+          <text>你当时写了一句话</text>
+        </view>
+        <view wx:if="{{noteOpen}}" class="note" style="border-left-color:{{cloth}}">{{card.note}}</view>
+      </view>
+
+      <view class="answers">
+        <view class="ans again" bindtap="onAgain">再来</view>
+        <view class="ans got" bindtap="onGot">记住了</view>
+      </view>
+    </view>
+
+    <view wx:if="{{!echo}}" class="counter">{{at + 1}} / {{batch.length}}</view>
+  </block>
+
+</view>

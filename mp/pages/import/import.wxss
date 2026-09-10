@@ -1,0 +1,78 @@
+/* 导入 — three steps, because the route from a desktop browser to a phone is genuinely three
+   steps and pretending otherwise would just confuse the reader. */
+
+.sec { font-family: "Songti SC", serif; font-size: 34rpx; letter-spacing: 0.04em; }
+.sub { font-size: 25rpx; color: #918879; margin: 10rpx 0 44rpx; line-height: 1.7; }
+
+.step {
+  display: flex;
+  padding: 34rpx 0;
+  border-bottom: 1rpx solid #efe8dc;
+}
+.step:last-of-type { border-bottom: 0; }
+.step .n {
+  width: 44rpx;
+  height: 44rpx;
+  flex: none;
+  border-radius: 99rpx;
+  border: 1rpx solid #e2dacd;
+  color: #918879;
+  font-size: 24rpx;
+  text-align: center;
+  line-height: 44rpx;
+  margin-right: 26rpx;
+  margin-top: 4rpx;
+}
+.step .b { flex: 1; min-width: 0; }
+.step .h { font-size: 29rpx; font-weight: 600; margin-bottom: 10rpx; }
+.step .p { font-size: 25rpx; color: #5d564c; line-height: 1.75; }
+
+.link {
+  display: inline-block;
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #a8352c;
+  border-bottom: 1rpx solid #a8352c;
+  padding-bottom: 2rpx;
+}
+
+.pick {
+  margin: 20rpx 0 16rpx;
+  padding: 26rpx 0;
+  text-align: center;
+  border: 1rpx dashed #e2dacd;
+  border-radius: 4rpx;
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  letter-spacing: 0.06em;
+  background: #fffdf9;
+}
+.pick:active { border-color: #a8352c; color: #a8352c; }
+
+.log {
+  margin-top: 36rpx;
+  padding: 24rpx 28rpx;
+  background: #fffdf9;
+  border: 1rpx solid #efe8dc;
+  border-radius: 4rpx;
+  font-size: 24rpx;
+  line-height: 1.8;
+  color: #5d564c;
+}
+
+.tally {
+  margin-top: 28rpx;
+  font-size: 24rpx;
+  color: #918879;
+}
+
+.tools { margin-top: 56rpx; }
+.danger {
+  display: inline-block;
+  padding: 18rpx 34rpx;
+  border: 1rpx solid #e2dacd;
+  border-radius: 4rpx;
+  font-size: 25rpx;
+  color: #918879;
+}
+.danger:active { color: #a8352c; border-color: #a8352c; }

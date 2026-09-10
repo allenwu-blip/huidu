@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "pages/review/review",
+    "pages/library/library",
+    "pages/import/import"
+  ],
+  "window": {
+    "navigationBarTitleText": "回读",
+    "navigationBarBackgroundColor": "#f7f3ec",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7f3ec",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#918879",
+    "selectedColor": "#22201c",
+    "backgroundColor": "#faf7f1",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/review/review", "text": "今日" },
+      { "pagePath": "pages/library/library", "text": "书架" },
+      { "pagePath": "pages/import/import", "text": "导入" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

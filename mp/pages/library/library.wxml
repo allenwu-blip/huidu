@@ -1,0 +1,38 @@
+<view class="wrap">
+
+  <view wx:if="{{ready && !books.length}}" class="blank">
+    <view class="blank-h">还没有东西</view>
+    <view class="blank-p">导入之后，这里按书排列。</view>
+    <view class="blank-btn" bindtap="goImport">去导入</view>
+  </view>
+
+  <block wx:elif="{{ready}}">
+    <view class="strip">
+      <view class="cell"><text class="n">{{stats.left}}</text><text class="k">今日待读</text></view>
+      <view class="cell"><text class="n">{{stats.reviewed}}</text><text class="k">已回顾</text></view>
+      <view class="cell"><text class="n">{{stats.fresh}}</text><text class="k">未读过</text></view>
+      <view class="cell"><text class="n">{{stats.total}}</text><text class="k">全部</text></view>
+    </view>
+
+    <view class="sec">书架</view>
+    <view class="sub">{{stats.bookCount}} 本书，{{stats.total}} 条划线。点开看某一本。</view>
+
+    <view wx:for="{{books}}" wx:key="id" class="book">
+      <view class="row" bindtap="toggle" data-id="{{item.id}}">
+        <view class="pin" style="background:{{item.cloth}}"></view>
+        <view class="bt">{{item.title}}</view>
+        <view class="bn">{{item.count}}</view>
+      </view>
+      <view wx:if="{{openId === item.id}}" class="items">
+        <view wx:for="{{item.items}}" wx:for-item="it" wx:key="id" class="item">
+          <view class="q">{{it.line}}</view>
+          <view class="sub2">
+            <text wx:if="{{it.chapter}}">{{it.chapter}} · </text>{{it.ago}}
+            <text class="tag">{{it.tag}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+</view>

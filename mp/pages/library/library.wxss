@@ -1,0 +1,65 @@
+/* 书架 — the counts belong here, not on 今日. */
+
+.strip {
+  display: flex;
+  border-top: 1rpx solid #efe8dc;
+  border-bottom: 1rpx solid #efe8dc;
+  margin-bottom: 52rpx;
+}
+.cell { flex: 1; padding: 28rpx 8rpx; text-align: center; }
+.cell .n {
+  display: block;
+  font-family: "Songti SC", serif;
+  font-size: 44rpx;
+  line-height: 1.2;
+}
+.cell .k { font-size: 22rpx; color: #918879; letter-spacing: 0.08em; }
+
+.sec { font-family: "Songti SC", serif; font-size: 32rpx; letter-spacing: 0.04em; }
+.sub { font-size: 25rpx; color: #918879; margin: 8rpx 0 40rpx; }
+
+.book { border-bottom: 1rpx solid #efe8dc; }
+.row { display: flex; align-items: center; padding: 28rpx 4rpx; }
+.pin { width: 8rpx; height: 48rpx; border-radius: 4rpx; flex: none; margin-right: 24rpx; }
+.bt {
+  flex: 1;
+  min-width: 0;
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.bn { font-size: 24rpx; color: #918879; flex: none; margin-left: 16rpx; }
+
+.items { padding: 4rpx 0 28rpx 32rpx; }
+.item { padding: 22rpx 0; border-top: 1rpx dotted #e2dacd; }
+.item:first-child { border-top: 0; }
+.q {
+  font-family: "Songti SC", serif;
+  font-size: 29rpx;
+  line-height: 1.8;
+  color: #5d564c;
+  word-break: break-word;
+}
+.sub2 { font-size: 22rpx; color: #918879; margin-top: 10rpx; }
+.tag {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 2rpx 14rpx;
+  border-radius: 99rpx;
+  border: 1rpx solid #e2dacd;
+  margin-left: 14rpx;
+}
+
+.blank { text-align: center; padding: 130rpx 0; }
+.blank-h { font-family: "Songti SC", serif; font-size: 36rpx; margin-bottom: 18rpx; }
+.blank-p { color: #918879; font-size: 27rpx; margin-bottom: 44rpx; }
+.blank-btn {
+  display: inline-block;
+  padding: 22rpx 48rpx;
+  border: 1rpx solid #e2dacd;
+  border-radius: 4rpx;
+  font-family: "Songti SC", serif;
+  font-size: 29rpx;
+}

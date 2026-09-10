@@ -1,0 +1,23 @@
+{
+  "appid": "wxbf72ff0ce2d37bcd",
+  "projectname": "huidu",
+  "compileType": "miniprogram",
+  "libVersion": "3.5.0",
+  "miniprogramRoot": "./",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "ignoreDevUnusedFiles": false,
+    "packNpmManually": false,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}
