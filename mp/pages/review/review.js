@@ -20,7 +20,7 @@ Page({
     batch: [],
     at: 0,
     card: null,
-    cloth: '#918879',
+    cloth: '#8a897f',
     ago: '',
     month: '',
     seen: '',

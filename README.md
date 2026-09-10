@@ -3,7 +3,7 @@
 把你在微信读书里划过的线，每天推几条回来给你看。
 
 在微信读书上划了几年线之后，我发现绝大部分自己完全不记得划过。问题不在划线，
-在于划完之后它们就沉底了 —— 微信读书没有回顾这一层，Readwise 有，但它不支持微信读书。
+在于划完之后它们就沉底了。微信读书没有回顾这一层，Readwise 有，但它不支持微信读书。
 
 所以写了这个。
 
@@ -30,7 +30,7 @@
 
 微信读书 App 没有「导出全部笔记」这个功能，所以做了一个书签：
 
-1. 打开上面的地址，进「导入」页，把「取回我的划线」按钮拖到浏览器书签栏
+1. 打开上面的地址，点「打开回读」，进「导入」页，把「取回我的划线」按钮拖到浏览器书签栏
 2. 打开 weread.qq.com 并登录，点一下那个书签
 3. 它会把你自己的划线拉下来，存成一个 json 文件
 4. 把那个文件拖回「导入」页
@@ -66,7 +66,7 @@
 ```bash
 node --test                        # 跑测试
 node tools/build-bookmarklet.mjs   # 生成书签
-node tools/build.mjs               # 打包成 docs/index.html 单文件
+node tools/build.mjs               # 打包：应用到 docs/app/，落地页到 docs/index.html
 ```
 
 ES 模块不能走 `file://`，本地开发起个静态服务器指向仓库根目录即可。
@@ -83,6 +83,8 @@ ES 模块不能走 `file://`，本地开发起个静态服务器指向仓库根�
 | `src/schema.mjs` | 卡片格式、校验、按 id 合并（合并时保住回顾进度） |
 | `src/import-weread.mjs` | 导入器，吃书签导出的单文件和分本文件两种格式 |
 | `src/review.mjs` | 回顾引擎。纯函数，`now` 一律外部传入，不读系统时钟 |
-| `app/` | 界面、IndexedDB、呈现层判断 |
+| `app/` | 应用界面、IndexedDB、呈现层判断 |
+| `landing/` | 落地页。链接分享的是它，应用在它下面一层 |
 | `tools/bookmarklet.js` | 取数书签的可读源码 |
-| `docs/index.html` | 打包产物，单个自包含 HTML |
+| `docs/index.html` | 落地页产物 |
+| `docs/app/index.html` | 应用产物，单个自包含 HTML，带 Service Worker 与 manifest |

@@ -2,12 +2,12 @@
    steps and pretending otherwise would just confuse the reader. */
 
 .sec { font-family: "Songti SC", serif; font-size: 34rpx; letter-spacing: 0.04em; }
-.sub { font-size: 25rpx; color: #918879; margin: 10rpx 0 44rpx; line-height: 1.7; }
+.sub { font-size: 25rpx; color: #8a897f; margin: 10rpx 0 44rpx; line-height: 1.7; }
 
 .step {
   display: flex;
   padding: 34rpx 0;
-  border-bottom: 1rpx solid #efe8dc;
+  border-bottom: 1rpx solid #ebebe7;
 }
 .step:last-of-type { border-bottom: 0; }
 .step .n {
@@ -15,8 +15,8 @@
   height: 44rpx;
   flex: none;
   border-radius: 99rpx;
-  border: 1rpx solid #e2dacd;
-  color: #918879;
+  border: 1rpx solid #dededa;
+  color: #8a897f;
   font-size: 24rpx;
   text-align: center;
   line-height: 44rpx;
@@ -25,14 +25,14 @@
 }
 .step .b { flex: 1; min-width: 0; }
 .step .h { font-size: 29rpx; font-weight: 600; margin-bottom: 10rpx; }
-.step .p { font-size: 25rpx; color: #5d564c; line-height: 1.75; }
+.step .p { font-size: 25rpx; color: #57564f; line-height: 1.75; }
 
 .link {
   display: inline-block;
   margin-top: 20rpx;
   font-size: 26rpx;
-  color: #a8352c;
-  border-bottom: 1rpx solid #a8352c;
+  color: #b0302a;
+  border-bottom: 1rpx solid #b0302a;
   padding-bottom: 2rpx;
 }
 
@@ -40,39 +40,39 @@
   margin: 20rpx 0 16rpx;
   padding: 26rpx 0;
   text-align: center;
-  border: 1rpx dashed #e2dacd;
+  border: 1rpx dashed #dededa;
   border-radius: 4rpx;
   font-family: "Songti SC", serif;
   font-size: 30rpx;
   letter-spacing: 0.06em;
-  background: #fffdf9;
+  background: #fcfcfb;
 }
-.pick:active { border-color: #a8352c; color: #a8352c; }
+.pick:active { border-color: #b0302a; color: #b0302a; }
 
 .log {
   margin-top: 36rpx;
   padding: 24rpx 28rpx;
-  background: #fffdf9;
-  border: 1rpx solid #efe8dc;
+  background: #fcfcfb;
+  border: 1rpx solid #ebebe7;
   border-radius: 4rpx;
   font-size: 24rpx;
   line-height: 1.8;
-  color: #5d564c;
+  color: #57564f;
 }
 
 .tally {
   margin-top: 28rpx;
   font-size: 24rpx;
-  color: #918879;
+  color: #8a897f;
 }
 
 .tools { margin-top: 56rpx; }
 .danger {
   display: inline-block;
   padding: 18rpx 34rpx;
-  border: 1rpx solid #e2dacd;
+  border: 1rpx solid #dededa;
   border-radius: 4rpx;
   font-size: 25rpx;
-  color: #918879;
+  color: #8a897f;
 }
-.danger:active { color: #a8352c; border-color: #a8352c; }
+.danger:active { color: #b0302a; border-color: #b0302a; }

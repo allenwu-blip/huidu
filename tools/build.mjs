@@ -14,9 +14,12 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..');
-// Output lands in docs/ rather than dist/ because GitHub Pages can serve a repo's /docs folder
-// with no Actions workflow and no second branch. The name is Pages' convention, not ours.
-const DIST = join(ROOT, 'docs');
+// GitHub Pages serves the repo's /docs folder with no Actions workflow and no second branch.
+// The landing page owns the root (that is what people link to); the app lives one level down
+// so its service worker scope (/huidu/app/) cannot intercept the landing.
+const DOCS = join(ROOT, 'docs');
+const DIST = join(DOCS, 'app');
+const LANDING = join(ROOT, 'landing');
 
 const MODULES = [
   'src/schema.mjs',
@@ -82,8 +85,9 @@ const out = html.replace(scriptRe, `<script type="module">\n${bundled}\n\n/* ─
 
 mkdirSync(DIST, { recursive: true });
 writeFileSync(join(DIST, 'index.html'), out, 'utf8');
-// GitHub Pages runs Jekyll by default and would eat files starting with an underscore
-writeFileSync(join(DIST, '.nojekyll'), '', 'utf8');
+// GitHub Pages runs Jekyll by default and would eat files starting with an underscore.
+// Lives at the Pages root, not inside app/.
+writeFileSync(join(DOCS, '.nojekyll'), '', 'utf8');
 
 // 5. PWA files are static, so they are copied rather than bundled. They must sit beside
 // index.html for the relative paths in the manifest and service worker to resolve.
@@ -103,9 +107,24 @@ for (const f of readdirSync(iconSrc)) {
 }
 console.log(`copied   ${copied} static files (manifest, service worker, icons)`);
 
+// 6. The landing page is plain static HTML: copied as-is, plus its screenshots.
+const landingSrc = join(LANDING, 'index.html');
+if (!existsSync(landingSrc)) throw new Error('landing/index.html missing');
+copyFileSync(landingSrc, join(DOCS, 'index.html'));
+const imgSrc = join(LANDING, 'img');
+let imgs = 0;
+if (existsSync(imgSrc)) {
+  mkdirSync(join(DOCS, 'img'), { recursive: true });
+  for (const f of readdirSync(imgSrc)) {
+    copyFileSync(join(imgSrc, f), join(DOCS, 'img', f));
+    imgs++;
+  }
+}
+console.log(`landing  docs/index.html + ${imgs} image(s)`);
+
 console.log(`modules  ${MODULES.length}`);
 console.log(`bundle   ${(bundled.length / 1024).toFixed(1)} KB`);
-console.log(`page     ${(out.length / 1024).toFixed(1)} KB  -> docs/index.html`);
+console.log(`page     ${(out.length / 1024).toFixed(1)} KB  -> docs/app/index.html`);
 // Must be anchored to line start: a loose /\bimport\s/ also matches the word in a comment,
 // which made this warn on a perfectly good bundle.
 const leftovers = out.replace(/<style>[\s\S]*?<\/style>/, '').match(/^\s*(import|export)\s+/gm);

@@ -113,7 +113,7 @@ Page({
     wx.showModal({
       title: '清空本机数据',
       content: '会删掉这台手机上保存的全部划线和回顾进度，不可撤销。',
-      confirmColor: '#a8352c',
+      confirmColor: '#b0302a',
       success(r) {
         if (!r.confirm) return;
         store.clearAll();

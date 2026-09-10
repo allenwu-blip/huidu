@@ -1,0 +1,156 @@
+{
+  "source": "weread",
+  "exportedAt": "2026-09-10T00:00:00.000Z",
+  "note": "演示数据：全部选自作者去世五十年以上的公版作品，用于落地页截图，不含任何真实用户数据。",
+  "books": [
+    {
+      "bookId": "demo-yecao",
+      "title": "野草",
+      "bookmarks": [],
+      "reviews": {
+        "reviews": [
+          {
+            "review": {
+              "reviewId": "demo-001",
+              "type": 1,
+              "bookId": "demo-yecao",
+              "book": { "bookId": "demo-yecao", "title": "野草", "author": "鲁迅" },
+              "chapterTitle": "题辞",
+              "chapterIdx": 1,
+              "abstract": "当我沉默着的时候，我觉得充实；我将开口，同时感到空虚。",
+              "content": "沉默不是没话说，是话太多，一开口就漏掉了大半。",
+              "createTime": 1678752000
+            }
+          },
+          {
+            "review": {
+              "reviewId": "demo-002",
+              "type": 1,
+              "bookId": "demo-yecao",
+              "book": { "bookId": "demo-yecao", "title": "野草", "author": "鲁迅" },
+              "chapterTitle": "希望",
+              "chapterIdx": 8,
+              "abstract": "绝望之为虚妄，正与希望相同。",
+              "content": "读到这句停了很久。原来失望也是一种自作多情。",
+              "createTime": 1679270400
+            }
+          },
+          {
+            "review": {
+              "reviewId": "demo-003",
+              "type": 1,
+              "bookId": "demo-yecao",
+              "book": { "bookId": "demo-yecao", "title": "野草", "author": "鲁迅" },
+              "chapterTitle": "秋夜",
+              "chapterIdx": 2,
+              "abstract": "在我的后园，可以看见墙外有两株树，一株是枣树，还有一株也是枣树。",
+              "content": "第一次读觉得啰嗦，第二次读出了那种一眼望去什么都没有的慢。",
+              "createTime": 1680393600
+            }
+          }
+        ]
+      }
+    },
+    {
+      "bookId": "demo-nahan",
+      "title": "呐喊",
+      "bookmarks": [],
+      "reviews": {
+        "reviews": [
+          {
+            "review": {
+              "reviewId": "demo-004",
+              "type": 1,
+              "bookId": "demo-nahan",
+              "book": { "bookId": "demo-nahan", "title": "呐喊", "author": "鲁迅" },
+              "chapterTitle": "故乡",
+              "chapterIdx": 10,
+              "abstract": "其实地上本没有路，走的人多了，也便成了路。",
+              "content": "小学课本里读过，当时不懂为什么这句要放在最后。",
+              "createTime": 1667865600
+            }
+          }
+        ]
+      }
+    },
+    {
+      "bookId": "demo-beiying",
+      "title": "背影",
+      "bookmarks": [],
+      "reviews": {
+        "reviews": [
+          {
+            "review": {
+              "reviewId": "demo-005",
+              "type": 1,
+              "bookId": "demo-beiying",
+              "book": { "bookId": "demo-beiying", "title": "背影", "author": "朱自清" },
+              "chapterTitle": "背影",
+              "chapterIdx": 3,
+              "abstract": "我看见他戴着黑布小帽，穿着黑布大马褂，深青布棉袍，蹒跚地走到铁道边，慢慢探身下去，尚不大难。",
+              "content": "写父亲不写脸，写背。",
+              "createTime": 1718928000
+            }
+          },
+          {
+            "review": {
+              "reviewId": "demo-006",
+              "type": 1,
+              "bookId": "demo-beiying",
+              "book": { "bookId": "demo-beiying", "title": "背影", "author": "朱自清" },
+              "chapterTitle": "匆匆",
+              "chapterIdx": 1,
+              "abstract": "燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。",
+              "content": "小学背过的课文，现在才觉得它是在说别的。",
+              "createTime": 1719878400
+            }
+          }
+        ]
+      }
+    },
+    {
+      "bookId": "demo-luotuo",
+      "title": "骆驼祥子",
+      "bookmarks": [],
+      "reviews": {
+        "reviews": [
+          {
+            "review": {
+              "reviewId": "demo-007",
+              "type": 1,
+              "bookId": "demo-luotuo",
+              "book": { "bookId": "demo-luotuo", "title": "骆驼祥子", "author": "老舍" },
+              "chapterTitle": "十八",
+              "chapterIdx": 18,
+              "abstract": "雨下给富人，也下给穷人；下给义人，也下给不义的人。其实，雨并不公道，因为落在一个没有公道的世界上。",
+              "content": "前半句像圣经，后半句把它掀了。",
+              "createTime": 1736899200
+            }
+          }
+        ]
+      }
+    },
+    {
+      "bookId": "demo-gudu",
+      "title": "故都的秋",
+      "bookmarks": [],
+      "reviews": {
+        "reviews": [
+          {
+            "review": {
+              "reviewId": "demo-008",
+              "type": 1,
+              "bookId": "demo-gudu",
+              "book": { "bookId": "demo-gudu", "title": "故都的秋", "author": "郁达夫" },
+              "chapterTitle": "故都的秋",
+              "chapterIdx": 1,
+              "abstract": "秋天，无论在什么地方的秋天，总是好的；可是啊，北国的秋，却特别地来得清，来得静，来得悲凉。",
+              "content": "清、静、悲凉，三个词一层层往下沉。",
+              "createTime": 1748563200
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

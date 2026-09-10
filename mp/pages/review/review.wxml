@@ -41,8 +41,6 @@
         <view class="line">
           <text style="color:{{cloth}}">{{ago}}</text>
           <text class="sep">·</text>
-          <text>{{month}}划下</text>
-          <text class="sep">·</text>
           <text>{{seen}}</text>
         </view>
       </view>

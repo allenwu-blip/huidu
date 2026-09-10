@@ -16,8 +16,8 @@ from PIL import Image, ImageDraw, ImageFont
 OUT = Path(__file__).resolve().parent.parent / "app" / "icons"
 OUT.mkdir(parents=True, exist_ok=True)
 
-PAPER = (247, 243, 236)
-SEAL = (168, 53, 44)
+PAPER = (246, 246, 244)
+SEAL = (176, 48, 42)
 SIZES = [192, 512]
 
 FONT_CANDIDATES = [

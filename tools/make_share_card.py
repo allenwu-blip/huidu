@@ -21,13 +21,14 @@ OUT = Path(__file__).resolve().parent.parent / "app" / "icons"
 OUT.mkdir(parents=True, exist_ok=True)
 
 W, H = 1200, 630
-PAPER = (247, 243, 236)
-PAPER_HI = (253, 250, 245)
-INK = (34, 32, 28)
-INK_2 = (93, 86, 76)
-INK_3 = (145, 136, 121)
-SEAL = (168, 53, 44)
-RULE = (226, 218, 205)
+# Neutral ground and ink, seal as the single accent. Kept in step with app/index.html tokens.
+PAPER = (246, 246, 244)
+PAPER_HI = (252, 252, 251)
+INK = (28, 28, 26)
+INK_2 = (87, 86, 79)
+INK_3 = (138, 137, 127)
+SEAL = (176, 48, 42)
+RULE = (222, 222, 218)
 
 SERIF = [r"C:\Windows\Fonts\simsun.ttc", r"C:\Windows\Fonts\simkai.ttf"]
 SANS = [r"C:\Windows\Fonts\msyh.ttc", r"C:\Windows\Fonts\simhei.ttf"]

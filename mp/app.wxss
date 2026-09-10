@@ -6,8 +6,8 @@
  * with app/index.html by hand: two clients, one look.
  */
 page {
-  background: #f7f3ec;
-  color: #22201c;
+  background: #f6f6f4;
+  color: #1c1c1a;
   font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
   font-size: 32rpx;
   line-height: 1.7;
@@ -20,12 +20,12 @@ page {
 
 /* the reading sheet: the hero of the whole product */
 .sheet {
-  background: #fffdf9;
-  border: 1rpx solid #efe8dc;
+  background: #fcfcfb;
+  border: 1rpx solid #ebebe7;
   border-radius: 6rpx;
   padding: 52rpx 52rpx 44rpx;
   position: relative;
-  box-shadow: 0 2rpx 4rpx rgba(34, 32, 28, 0.04), 0 20rpx 56rpx -24rpx rgba(34, 32, 28, 0.22);
+  box-shadow: 0 2rpx 4rpx rgba(28, 28, 26, 0.04), 0 20rpx 56rpx -24rpx rgba(28, 28, 26, 0.22);
 }
 .spine {
   position: absolute;
@@ -40,13 +40,13 @@ page {
 .meta {
   font-size: 24rpx;
   line-height: 1.8;
-  color: #918879;
+  color: #8a897f;
   margin-bottom: 36rpx;
 }
 .meta .title {
   display: block;
   font-size: 30rpx;
-  color: #22201c;
+  color: #1c1c1a;
   font-weight: 500;
   margin-bottom: 4rpx;
 }
@@ -61,7 +61,7 @@ page {
   font-family: "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", serif;
   font-size: 38rpx;
   line-height: 1.9;
-  color: #22201c;
+  color: #1c1c1a;
   letter-spacing: 0.02em;
   white-space: pre-wrap;
   word-break: break-word;
@@ -71,19 +71,19 @@ page {
 }
 
 .note {
-  border-left: 4rpx solid #e2dacd;
+  border-left: 4rpx solid #dededa;
   padding: 4rpx 0 4rpx 28rpx;
   font-size: 30rpx;
   line-height: 1.85;
-  color: #5d564c;
+  color: #57564f;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .muted {
-  color: #918879;
+  color: #8a897f;
   font-size: 24rpx;
 }
 .seal-red {
-  color: #a8352c;
+  color: #b0302a;
 }

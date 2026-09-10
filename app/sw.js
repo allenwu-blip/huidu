@@ -9,7 +9,8 @@
  *
  * Bump VERSION on every release; the activate handler drops every other cache.
  */
-const VERSION = 'huidu-v1';
+// v2: icons were regenerated in the neutral palette; same filenames, so the cache must roll.
+const VERSION = 'huidu-v2';
 const SHELL = [
   './',
   './index.html',
