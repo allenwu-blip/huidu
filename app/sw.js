@@ -9,8 +9,9 @@
  *
  * Bump VERSION on every release; the activate handler drops every other cache.
  */
-// v2: icons were regenerated in the neutral palette; same filenames, so the cache must roll.
-const VERSION = 'huidu-v2';
+// Icons keep their filenames across palette changes, so every icon change must roll the cache.
+// v2: neutral palette. v3: 纸与墨, the page redesign.
+const VERSION = 'huidu-v3';
 const SHELL = [
   './',
   './index.html',
