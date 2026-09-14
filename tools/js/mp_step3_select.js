@@ -1,6 +1,6 @@
 // Select 类目=其他 and 主体类型=个人, then report the resulting state WITHOUT pressing 继续.
 //
-// Why these two: 回甘 is a tool, not a game, and the detailed 服务类目 (which must contain
+// Why these two: 百回读 is a tool, not a game, and the detailed 服务类目 (which must contain
 // 工具 for 虚拟支付) is set later in the MP console. 主体类型 must be 个人 because the official
 // 虚拟支付：个人 page requires 个人主体 holding a mainland ID — picking 企业 here would need a
 // business licence he does not have.

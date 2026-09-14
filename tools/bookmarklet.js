@@ -12,7 +12,7 @@
  * Nothing is sent anywhere.
  */
 (async () => {
-  const TAG = '[回甘]';
+  const TAG = '[百回读]';
   if (!location.hostname.endsWith('weread.qq.com')) {
     alert('请先打开 weread.qq.com 并登录，然后再点这个书签。');
     return;
@@ -96,12 +96,12 @@
     }
 
     if (saved) {
-      say(`导出完成：${books.size} 本书。\n文件 ${name} 已存到下载文件夹，把它拖进「回甘」就行。`);
+      say(`导出完成：${books.size} 本书。\n文件 ${name} 已存到下载文件夹，把它拖进「百回读」就行。`);
     } else {
       // CSP blocked the blob download — fall back to the clipboard
       try {
         await navigator.clipboard.writeText(payload);
-        say(`浏览器挡住了下载。\n内容已复制到剪贴板，粘贴保存成 ${name} 再拖进「回甘」。`);
+        say(`浏览器挡住了下载。\n内容已复制到剪贴板，粘贴保存成 ${name} 再拖进「百回读」。`);
       } catch (e2) {
         say('导出失败，浏览器同时挡住了下载和剪贴板。请换 Chrome 或 Edge 再试。');
       }
