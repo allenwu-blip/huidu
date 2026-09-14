@@ -1,7 +1,7 @@
 {
   "name": "回读",
   "short_name": "回读",
-  "description": "把你在微信读书里划过的线，每天推几条回来给你看。",
+  "description": "划过的线，过些日子再读一遍。",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",

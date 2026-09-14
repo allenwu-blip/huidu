@@ -109,7 +109,7 @@ def main():
     # brand row
     chop(img, M, M - 8, 60, "回", angle=-6, alpha=255)
     d.text((M + 84, M - 4), "回读", font=font(SERIF_B, 52), fill=INK)
-    d.text((M + 84, M + 56), "把你划过的线，每天推几条回来", font=font(SERIF, 27), fill=INK_2)
+    d.text((M + 84, M + 56), "划过的线，过些日子再读一遍", font=font(SERIF, 27), fill=INK_2)
 
     # the page
     px0, py0, px1, py1 = M, 196, W - M, 552
