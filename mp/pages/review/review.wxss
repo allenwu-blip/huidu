@@ -1,100 +1,177 @@
-/* 今日 — no numbers on this screen on purpose. The dots say where you are; the counts live on
-   书架. Reading should not be measured while you are doing it. */
+/* 今日: one page, held up to the reader. No counts on this screen on purpose; the pile
+   behind the page and the folio under it say where you are. The counts live on 书架. */
 
-.dots {
+.stage {
+  min-height: 82vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 14rpx;
-  height: 12rpx;
-  align-items: center;
-  margin-bottom: 48rpx;
 }
-.dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 99rpx;
-  background: #dededa;
-}
-.dot.done { background: #8a897f; }
-.dot.here { background: #b0302a; transform: scale(1.4); }
 
-.reveal { margin-top: 44rpx; }
+/* what is left today, stacked behind the page */
+.pile { position: relative; }
+.ghost {
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  bottom: 0;
+  background: #f0ebe0;
+  border-radius: 8rpx;
+  box-shadow: 0 0 0 1rpx rgba(60, 44, 18, 0.05), 0 16rpx 48rpx -28rpx rgba(60, 44, 18, 0.22);
+  transform: translateY(18rpx);
+}
+.ghost.g2 {
+  left: 40rpx;
+  right: 40rpx;
+  transform: translateY(36rpx);
+  opacity: 0.75;
+}
+.pile .page { animation: rise 0.55s cubic-bezier(0.32, 0.72, 0, 1) both; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24rpx); }
+  to { opacity: 1; transform: none; }
+}
+/* stamp first, turn second: the delay is what makes it read as stamped, then filed */
+.page.leaving { animation: turn 0.5s cubic-bezier(0.32, 0.72, 0, 1) 0.34s forwards; }
+@keyframes turn {
+  to { opacity: 0; transform: perspective(2800rpx) rotateY(-72deg) translateX(-16rpx); }
+}
+.page.leaving-again { animation: back 0.46s cubic-bezier(0.32, 0.72, 0, 1) 0.34s forwards; }
+@keyframes back {
+  to { opacity: 0; transform: translateY(48rpx) scale(0.965); }
+}
+
+.reveal { margin-top: 40rpx; }
 .reveal-btn {
   display: flex;
   align-items: center;
-  font-size: 26rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 27rpx;
+  letter-spacing: 0.08em;
+  color: #8a8071;
+  padding: 8rpx 0;
 }
-.chev { margin-right: 12rpx; font-size: 22rpx; }
-.reveal .note { margin-top: 24rpx; }
+.chev {
+  margin-right: 16rpx;
+  font-size: 26rpx;
+  color: #b23a2e;
+  transition: transform 0.4s cubic-bezier(0.2, 1.3, 0.35, 1);
+}
+.chev.open { transform: rotate(90deg); }
+.reveal .note { margin-top: 22rpx; }
 
 .answers {
   display: flex;
-  gap: 24rpx;
-  margin-top: 56rpx;
+  margin-top: 48rpx;
+  border-top: 1rpx solid #e4ddce;
 }
 .ans {
   flex: 1;
   text-align: center;
-  padding: 28rpx 0;
-  border: 1rpx solid #dededa;
-  border-radius: 4rpx;
-  font-family: "Songti SC", serif;
-  font-size: 30rpx;
+  padding: 30rpx 8rpx 12rpx;
+  color: #5a5245;
+}
+.ans + .ans { border-left: 1rpx solid #e4ddce; }
+.ans-t {
+  display: block;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 33rpx;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  line-height: 1.3;
+}
+.ans-s {
+  display: block;
+  font-size: 22rpx;
   letter-spacing: 0.06em;
-  color: #57564f;
+  color: #8a8071;
+  margin-top: 8rpx;
 }
-.ans.again:active { border-color: #a3452f; color: #a3452f; }
-.ans.got:active { border-color: #3f6b4d; color: #3f6b4d; }
+.ans.got { color: #231f19; }
+.ans.got:active { color: #b23a2e; }
+.ans.again:active { color: #a8583f; }
 
-.counter {
-  text-align: center;
-  margin-top: 28rpx;
-  font-size: 23rpx;
-  color: #8a897f;
+/* the stamp: lands on the page the moment you answer */
+.stamp {
+  position: absolute;
+  right: 56rpx;
+  top: 46%;
+  width: 120rpx;
+  height: 120rpx;
+  margin-top: -60rpx;
+  border: 5rpx solid #b23a2e;
+  border-radius: 10rpx;
+  color: #b23a2e;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 58rpx;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.88;
+  transform: rotate(-9deg);
+  mix-blend-mode: multiply;
+  animation: stampIn 0.42s cubic-bezier(0.2, 1.3, 0.35, 1) both;
+}
+.stamp.again { color: #8a8071; border-color: #8a8071; }
+@keyframes stampIn {
+  from { opacity: 0; transform: rotate(-9deg) scale(1.9); }
+  65% { opacity: 0.9; transform: rotate(-9deg) scale(0.93); }
+  to { opacity: 0.88; transform: rotate(-9deg) scale(1); }
 }
 
-/* the answer's consequence, said out loud */
-.echo {
+/* folio, under the pile, in the numerals a book would use */
+.folio {
   text-align: center;
-  padding: 120rpx 0;
-  font-family: "Songti SC", serif;
-  font-size: 32rpx;
-  letter-spacing: 0.08em;
+  margin-top: 72rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 26rpx;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  color: #8a8071;
 }
 
 /* finished for today */
-.done { text-align: center; padding: 140rpx 0 60rpx; }
+.done { text-align: center; padding: 40rpx 0; }
 .seal {
-  width: 190rpx;
-  height: 190rpx;
-  margin: 0 auto 52rpx;
-  border: 5rpx solid #b0302a;
-  border-radius: 12rpx;
+  width: 224rpx;
+  height: 224rpx;
+  margin: 0 auto 56rpx;
+  border: 6rpx solid #b23a2e;
+  border-radius: 16rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #b0302a;
-  font-family: "Songti SC", serif;
-  font-size: 50rpx;
-  line-height: 1.15;
-  letter-spacing: 0.08em;
-  transform: rotate(-4deg);
-  opacity: 0.92;
+  color: #b23a2e;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 58rpx;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-indent: 0.1em;
+  transform: rotate(-5deg);
+  opacity: 0.9;
+  animation: stampIn 0.5s cubic-bezier(0.2, 1.3, 0.35, 1) both;
 }
-.done-h { font-family: "Songti SC", serif; font-size: 38rpx; margin-bottom: 16rpx; }
-.done-p { color: #8a897f; font-size: 27rpx; }
+.done-h { font-family: "Songti SC", "STSong", serif; font-size: 40rpx; letter-spacing: 0.06em; margin-bottom: 16rpx; }
+.done-p { color: #8a8071; font-size: 28rpx; }
 
-/* nothing imported */
-.blank { text-align: center; padding: 130rpx 0; }
-.blank-h { font-family: "Songti SC", serif; font-size: 36rpx; margin-bottom: 18rpx; }
-.blank-p { color: #8a897f; font-size: 27rpx; margin-bottom: 44rpx; }
+/* nothing imported: an empty page and one way forward */
+.blank { text-align: center; }
+.blank-page { padding: 96rpx 60rpx 88rpx; text-align: center; margin-bottom: 56rpx; }
+.blank-h { font-family: "Songti SC", "STSong", serif; font-size: 38rpx; letter-spacing: 0.06em; margin-bottom: 20rpx; }
+.blank-p { color: #8a8071; font-size: 28rpx; line-height: 1.8; }
 .blank-btn {
   display: inline-block;
-  padding: 22rpx 48rpx;
-  border: 1rpx solid #dededa;
-  border-radius: 4rpx;
-  font-family: "Songti SC", serif;
+  padding: 22rpx 52rpx;
+  border: 1rpx solid #8a8071;
+  border-radius: 8rpx;
+  font-family: "Songti SC", "STSong", serif;
   font-size: 29rpx;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  color: #231f19;
 }
-.blank-btn:active { border-color: #b0302a; color: #b0302a; }
+.blank-btn:active { border-color: #b23a2e; color: #b23a2e; }

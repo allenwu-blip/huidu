@@ -111,16 +111,18 @@ console.log(`copied   ${copied} static files (manifest, service worker, icons)`)
 const landingSrc = join(LANDING, 'index.html');
 if (!existsSync(landingSrc)) throw new Error('landing/index.html missing');
 copyFileSync(landingSrc, join(DOCS, 'index.html'));
-const imgSrc = join(LANDING, 'img');
-let imgs = 0;
-if (existsSync(imgSrc)) {
-  mkdirSync(join(DOCS, 'img'), { recursive: true });
-  for (const f of readdirSync(imgSrc)) {
-    copyFileSync(join(imgSrc, f), join(DOCS, 'img', f));
-    imgs++;
+// Screenshots and the subsetted webfonts (tools/subset_fonts.py) sit beside it.
+let assets = 0;
+for (const sub of ['img', 'fonts']) {
+  const from = join(LANDING, sub);
+  if (!existsSync(from)) continue;
+  mkdirSync(join(DOCS, sub), { recursive: true });
+  for (const f of readdirSync(from)) {
+    copyFileSync(join(from, f), join(DOCS, sub, f));
+    assets++;
   }
 }
-console.log(`landing  docs/index.html + ${imgs} image(s)`);
+console.log(`landing  docs/index.html + ${assets} asset(s)`);
 
 console.log(`modules  ${MODULES.length}`);
 console.log(`bundle   ${(bundled.length / 1024).toFixed(1)} KB`);

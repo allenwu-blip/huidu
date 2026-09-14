@@ -7,8 +7,8 @@
 <meta name="description" content="把你在微信读书里划过的线，每天推几条回来给你看。不用注册，没有云，数据只在你自己的浏览器里。">
 <link rel="icon" href="app/icons/icon-192.png">
 <link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
-<meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ebe5d8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
 <!-- Share card. Absolute URLs on purpose: 即刻 and WeChat's crawlers do not resolve relative
      og:image paths, and without these the link renders as a bare domain with no preview. -->
 <meta property="og:type" content="website">
@@ -25,176 +25,286 @@
 <meta name="twitter:title" content="回读：把你划过的线，每天推几条回来">
 <meta name="twitter:description" content="微信读书划完的线就沉底了。每天推 5 条回来。不用注册，没有云，数据只在你自己的浏览器里。">
 <meta name="twitter:image" content="https://allenwu-blip.github.io/huidu/app/icons/share-card.png">
+<link rel="preload" href="fonts/serif-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/serif-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* ── type: real faces, cut to this page's glyphs by tools/subset_fonts.py ────────────────
+   思源宋体 for everything printed, 霞鹜文楷 for the sample 旁批. ~150 KB a face, swap in. */
+@font-face{font-family:"Huidu Serif";font-weight:400;font-display:swap;src:url(fonts/serif-400.woff2) format("woff2")}
+@font-face{font-family:"Huidu Serif";font-weight:600;font-display:swap;src:url(fonts/serif-600.woff2) format("woff2")}
+@font-face{font-family:"Huidu Kai";font-weight:400;font-display:swap;src:url(fonts/kai.woff2) format("woff2")}
+
 /* ── tokens: identical to app/index.html so landing and app read as one product ───────── */
 :root{
-  --paper:#f6f6f4; --paper-2:#fcfcfb; --ink:#1c1c1a; --ink-2:#57564f; --ink-3:#8a897f;
-  --rule:#dededa; --rule-2:#ebebe7; --seal:#b0302a; --ok:#3f6b4d; --again:#a3452f;
-  --lift:0 1px 1px rgba(28,28,26,.04), 0 10px 30px -12px rgba(28,28,26,.16);
-  --lift-2:0 2px 4px rgba(28,28,26,.05), 0 24px 60px -24px rgba(28,28,26,.26);
-  --serif:"Source Han Serif SC","Noto Serif CJK SC","Songti SC",Georgia,"SimSun",serif;
-  --sans:-apple-system,"Segoe UI Variable Text","Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  --ease:cubic-bezier(.22,.61,.36,1);
-  /* shape lock: one radius for surfaces and buttons (3px), pills only for the tiny sample tag */
-  --r:3px;
+  --paper:#ebe5d8; --paper-2:#f8f5ee; --paper-3:#f0ebe0;
+  --ink:#231f19; --ink-2:#5a5245; --ink-3:#8a8071;
+  --rule:#d8d0bf; --rule-2:#e4ddce;
+  --seal:#b23a2e; --ok:#4b7657; --again:#a8583f;
+  --sh:60 44 18;
+  --lift:inset 0 1px 0 rgba(255,255,255,.7), 0 0 0 1px rgba(var(--sh)/.05), 0 1px 2px rgba(var(--sh)/.06),
+         0 14px 34px -16px rgba(var(--sh)/.3), 0 36px 70px -36px rgba(var(--sh)/.22);
+  --lift-s:0 0 0 1px rgba(var(--sh)/.05), 0 8px 24px -14px rgba(var(--sh)/.22);
+  --glow:rgba(255,255,255,.55);
+  --bezel:#1b1815;
+  --serif:"Huidu Serif","Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong",Georgia,"SimSun",serif;
+  --kai:"Huidu Kai","LXGW WenKai","霞鹜文楷","Kaiti SC","STKaiti","KaiTi","楷体","Noto Serif CJK SC","Songti SC",serif;
+  --sans:-apple-system,"PingFang SC","Segoe UI Variable Text","Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --spring:cubic-bezier(.2,1.3,.35,1);
+  --r:4px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --paper:#141413; --paper-2:#1c1c1a; --ink:#e8e8e4; --ink-2:#a3a29a; --ink-3:#75746c;
-  --rule:#2c2c29; --rule-2:#232320; --seal:#d0574a; --ok:#7fa98c; --again:#c9806c;
-  --lift:0 1px 1px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.6);
-  --lift-2:0 2px 4px rgba(0,0,0,.35), 0 24px 60px -24px rgba(0,0,0,.7);
+  --paper:#16130f; --paper-2:#1f1b16; --paper-3:#1a1713;
+  --ink:#ece4d3; --ink-2:#b3a996; --ink-3:#7d7364;
+  --rule:#37312a; --rule-2:#2b2621;
+  --seal:#d8624e; --ok:#88ae93; --again:#cf8b6f;
+  --sh:0 0 0;
+  --lift:inset 0 1px 0 rgba(255,255,255,.045), 0 0 0 1px rgba(255,255,255,.04),
+         0 14px 34px -16px rgba(0,0,0,.7), 0 36px 70px -36px rgba(0,0,0,.6);
+  --lift-s:0 0 0 1px rgba(255,255,255,.035), 0 8px 24px -14px rgba(0,0,0,.6);
+  --glow:rgba(255,255,255,.035);
+  --bezel:#0c0b09;
 }}
 :root[data-theme=dark]{
-  --paper:#141413; --paper-2:#1c1c1a; --ink:#e8e8e4; --ink-2:#a3a29a; --ink-3:#75746c;
-  --rule:#2c2c29; --rule-2:#232320; --seal:#d0574a; --ok:#7fa98c; --again:#c9806c;
+  --paper:#16130f; --paper-2:#1f1b16; --paper-3:#1a1713;
+  --ink:#ece4d3; --ink-2:#b3a996; --ink-3:#7d7364;
+  --rule:#37312a; --rule-2:#2b2621;
+  --seal:#d8624e; --ok:#88ae93; --again:#cf8b6f;
+  --sh:0 0 0; --glow:rgba(255,255,255,.035); --bezel:#0c0b09;
 }
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans);
+  margin:0;background:var(--paper);color:var(--ink);font:16.5px/1.9 var(--serif);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  background-image:radial-gradient(110% 60% at 50% -10%, var(--glow), transparent 62%);
 }
-/* grain on a fixed, pointer-events-none layer only: never on a scrolling container */
+/* paper grain on a fixed, pointer-events-none layer only: never on a scrolling container */
 body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.75;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.085'/%3E%3C/svg%3E");
 }
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) body::before{mix-blend-mode:overlay;opacity:.5}}
+:root[data-theme=dark] body::before{mix-blend-mode:overlay;opacity:.5}
 header,main,footer{position:relative;z-index:1}
 a{color:inherit}
 img{max-width:100%;height:auto;display:block}
+:focus-visible{outline:2px solid var(--seal);outline-offset:3px;border-radius:2px}
+button{-webkit-tap-highlight-color:transparent}
 
 .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
 
-/* ── nav: one line, 64px, one CTA label used everywhere on the page ─────────────────── */
+/* ── nav ─────────────────────────────────────────────────────────────────────────────── */
 header{position:sticky;top:0;z-index:9;border-bottom:1px solid var(--rule-2);
-  background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(12px) saturate(1.2)}
+  background:color-mix(in srgb,var(--paper) 78%,transparent);backdrop-filter:blur(16px) saturate(1.15);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15)}
 .bar{height:64px;display:flex;align-items:center;gap:16px}
-.mark{font-family:var(--serif);font-size:19px;letter-spacing:.22em;text-indent:.22em;font-weight:500}
-.bar nav{margin-left:auto;display:flex;align-items:center;gap:22px;font-size:14px}
-.bar nav a{text-decoration:none;color:var(--ink-3);transition:color .2s var(--ease)}
+.brand{display:inline-flex;align-items:center;gap:11px;text-decoration:none}
+.sealmark{width:22px;height:22px;color:var(--seal);transform:rotate(-6deg);flex:none}
+.mark{font-size:18px;letter-spacing:.2em;font-weight:600;line-height:1}
+.bar nav{margin-left:auto;display:flex;align-items:center;gap:24px;font:14px/1 var(--sans)}
+.bar nav a{text-decoration:none;color:var(--ink-3);transition:color .25s var(--ease)}
 .bar nav a:hover{color:var(--ink)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;
-  padding:13px 26px;border-radius:var(--r);border:1px solid var(--ink);background:var(--ink);
-  color:var(--paper);font:inherit;font-family:var(--serif);font-size:15.5px;letter-spacing:.08em;
-  text-decoration:none;cursor:pointer;transition:transform .18s var(--ease),background .2s var(--ease)}
+  padding:14px 30px;border-radius:var(--r);border:1px solid var(--ink);background:var(--ink);
+  color:var(--paper-2);font:15.5px/1 var(--serif);letter-spacing:.12em;text-indent:.12em;
+  text-decoration:none;cursor:pointer;transition:transform .18s var(--ease),background .25s var(--ease),border-color .25s var(--ease)}
 .btn:hover{background:var(--seal);border-color:var(--seal);color:#fff}
-.btn:active{transform:translateY(1px)}
-.btn.small{padding:8px 16px;font-size:13.5px;letter-spacing:.06em}
+.btn:active{transform:scale(.97)}
+.btn.small{padding:9px 18px;font-size:13.5px;letter-spacing:.08em}
 
-/* ── hero: asymmetric split, real component on the right ────────────────────────────── */
-.hero{padding:72px 0 84px}
-.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
-h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,4.6vw,52px);line-height:1.28;
-  letter-spacing:.01em;margin:0 0 22px}
-.lead{font-size:17px;line-height:1.85;color:var(--ink-2);max-width:34em;margin:0 0 34px}
-.hero-cta{display:flex;align-items:center;gap:18px}
-.hero-cta .quiet{font-size:13.5px;color:var(--ink-3)}
+/* ── hero: copy left, a small pile of today's pages right ────────────────────────────── */
+.hero{padding:78px 0 96px}
+.hero .wrap{display:grid;grid-template-columns:1fr .95fr;gap:72px;align-items:center}
+h1{font-weight:600;font-size:clamp(36px,4.9vw,58px);line-height:1.22;letter-spacing:.01em;margin:0 0 24px;
+  text-wrap:balance}
+.lead{font-size:18px;line-height:1.9;color:var(--ink-2);max-width:30em;margin:0 0 36px}
+.hero-cta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.hero-cta .quiet{font:13.5px/1.6 var(--sans);color:var(--ink-3)}
 
-/* entry: hierarchy. The copy lands first, the card arrives a beat later so the eye reads
-   left to right. Disabled under reduced motion. */
 @media (prefers-reduced-motion:no-preference){
-  .hero .copy{animation:rise .6s var(--ease) both}
-  .hero .demo{animation:rise .7s .12s var(--ease) both}
+  .hero .copy{animation:rise .7s var(--ease) both}
+  .hero .demo{animation:rise .8s .12s var(--ease) both}
+  /* only once the script is running: with JS off or broken nothing may stay hidden */
+  .js .in{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .js .in.on{opacity:1;transform:none}
 }
-@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* ── the card: the same sheet the app renders, not a picture of it ───────────────────── */
-.sheet{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:var(--r);
-  padding:28px 30px 24px;box-shadow:var(--lift-2);position:relative}
-.sheet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--cloth,var(--ink-3));border-radius:var(--r) 0 0 var(--r);opacity:.85}
-.meta{font-size:12.5px;line-height:1.75;color:var(--ink-3);margin-bottom:18px}
-.meta .title{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:500;display:block;margin-bottom:2px}
-.meta .sep{opacity:.4;margin:0 6px}
+/* the pile: two ghost sheets under the live page, slightly askew like pages set down by hand */
+.stack{position:relative;max-width:520px;margin-left:auto}
+.ghost{position:absolute;inset:0;background:var(--paper-3);border-radius:var(--r);box-shadow:var(--lift-s)}
+.ghost.g1{transform:rotate(-2.2deg) translate(-6px,10px)}
+.ghost.g2{transform:rotate(2.4deg) translate(9px,20px);opacity:.8}
+
+/* ── the page: the same sheet the app renders, not a picture of it ───────────────────── */
+.page{position:relative;background:var(--paper-2);border-radius:var(--r);padding:30px 30px 20px 34px;
+  box-shadow:var(--lift);background-image:linear-gradient(90deg,rgba(var(--sh)/.055),rgba(var(--sh)/0) 44px);
+  transform-origin:left center}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:var(--r) 0 0 var(--r);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cloth,var(--ink-3)) 78%,white),
+    var(--cloth,var(--ink-3)) 30%,color-mix(in srgb,var(--cloth,var(--ink-3)) 82%,black))}
+.page.leaving{animation:turn .5s var(--ease) .34s forwards}
+@keyframes turn{to{opacity:0;transform:perspective(1400px) rotateY(-72deg) translateX(-8px)}}
+.page.leaving-again{animation:back .46s var(--ease) .34s forwards}
+@keyframes back{to{opacity:0;transform:translateY(24px) scale(.965)}}
+.page.arriving{animation:rise .5s var(--ease) both}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l1 chop" "l2 chop";
+  gap:6px 16px;align-items:center;padding-bottom:14px;margin-bottom:22px;border-bottom:1px solid var(--rule-2)}
+.head .l1{grid-area:l1;min-width:0;line-height:1.4}
+.head .bk{font-size:15.5px;font-weight:600;letter-spacing:.04em}
+.head .au{font:12.5px/1 var(--sans);color:var(--ink-3);margin-left:10px;letter-spacing:.06em;white-space:nowrap}
+.head .l2{grid-area:l2;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font:12.5px/1.5 var(--sans);color:var(--ink-3);letter-spacing:.03em}
+.head .ch{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.head .when{white-space:nowrap}
+.sep{opacity:.45;margin:0 6px}
 .ago{color:var(--cloth,var(--ink-2));font-weight:500}
-.tag{display:inline-block;font-size:10.5px;padding:1px 8px;border-radius:99px;border:1px solid var(--rule);
-  color:var(--ink-3);letter-spacing:.06em;margin-left:8px;vertical-align:1px}
-blockquote{margin:0;font-family:var(--serif);font-size:18.5px;line-height:1.88;color:var(--ink);
-  letter-spacing:.012em;white-space:pre-wrap;word-break:break-word}
+.chop{grid-area:chop;width:36px;height:36px;border:1.5px solid var(--seal);border-radius:3px;color:var(--seal);
+  font-family:var(--serif);font-size:20px;font-weight:600;line-height:1;display:grid;place-items:center;
+  transform:rotate(-7deg);opacity:.74;
+  background:radial-gradient(circle at 30% 28%,color-mix(in srgb,var(--seal) 12%,transparent),transparent 70%)}
+blockquote{margin:0;font-size:20px;line-height:1.95;letter-spacing:.02em;text-align:justify;white-space:pre-line}
 blockquote.hang{text-indent:-.62em}
-.reveal{margin-top:22px}
-.reveal button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:0;
-  color:var(--ink-3);font:inherit;font-size:13.5px;cursor:pointer;transition:color .2s var(--ease)}
-.reveal button:hover{color:var(--cloth,var(--ink-2))}
-.reveal .chev{transition:transform .3s var(--ease);display:inline-block;font-size:11px}
-.reveal[data-open=true] .chev{transform:rotate(90deg)}
-.reveal .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s var(--ease),opacity .3s var(--ease);opacity:0;margin-top:0}
-.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1;margin-top:14px}
+.reveal{margin-top:20px}
+.reveal button{display:inline-flex;align-items:center;gap:9px;background:none;border:0;padding:4px 0;
+  color:var(--ink-3);font:13.5px/1.3 var(--serif);letter-spacing:.08em;cursor:pointer;transition:color .25s var(--ease)}
+.reveal button:hover{color:var(--ink-2)}
+.reveal button .chev{display:inline-block;color:var(--seal);font-size:13px;line-height:1;transition:transform .4s var(--spring)}
+.reveal[data-open=true] button .chev{transform:rotate(90deg)}
+.reveal .body{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s var(--ease),opacity .35s var(--ease)}
+.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1}
 .reveal .body>div{overflow:hidden}
-.note{border-left:2px solid var(--cloth,var(--rule));padding:2px 0 2px 16px;font-size:15px;line-height:1.85;color:var(--ink-2)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
-.answers span{padding:13px 12px;border-radius:var(--r);border:1px solid var(--rule);text-align:center;
-  color:var(--ink-2);font-family:var(--serif);font-size:14.5px;letter-spacing:.06em}
+.note{margin-top:12px;padding:2px 0 2px 18px;border-left:1.5px solid var(--cloth,var(--rule));
+  font-family:var(--kai);font-size:17.5px;line-height:1.9;color:var(--ink-2);white-space:pre-line}
+.answers{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-top:1px solid var(--rule-2)}
+.answers button{background:none;border:0;padding:16px 8px 6px;color:var(--ink-2);cursor:pointer;
+  font:16.5px/1.3 var(--serif);letter-spacing:.16em;text-indent:.16em;
+  transition:color .25s var(--ease),transform .15s var(--ease)}
+.answers button+button{border-left:1px solid var(--rule-2)}
+.answers button small{display:block;font:11px/1.4 var(--sans);letter-spacing:.06em;text-indent:0;color:var(--ink-3);margin-top:5px}
+.answers .got{color:var(--ink)}
+.answers .got:hover{color:var(--seal)}
+.answers .again:hover{color:var(--again)}
+.answers button:active{transform:scale(.97)}
+.stamp{position:absolute;right:28px;top:46%;width:60px;height:60px;margin-top:-30px;pointer-events:none;
+  border:2.5px solid currentColor;border-radius:5px;color:var(--seal);opacity:.88;
+  font-family:var(--serif);font-size:29px;font-weight:600;line-height:1;display:grid;place-items:center;
+  transform:rotate(-9deg);mix-blend-mode:multiply;animation:stampIn .42s var(--spring) both}
+.stamp.again{color:var(--ink-3)}
+.stamp.still{animation:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .stamp{mix-blend-mode:normal}}
+:root[data-theme=dark] .stamp{mix-blend-mode:normal}
+@keyframes stampIn{from{opacity:0;transform:rotate(-9deg) scale(1.9)}
+  65%{opacity:.9;transform:rotate(-9deg) scale(.93)}to{opacity:.88;transform:rotate(-9deg) scale(1)}}
+.try{margin-top:16px;text-align:center;font:12.5px/1.6 var(--sans);color:var(--ink-3);letter-spacing:.04em}
+@media (prefers-reduced-motion:reduce){
+  .page.leaving,.page.leaving-again{animation:none;opacity:0;transition:opacity .2s}
+  .page.arriving,.stamp{animation:none}
+  .reveal .body,.reveal button .chev{transition:none}
+}
 
 /* ── sections ────────────────────────────────────────────────────────────────────────── */
-section{padding:88px 0}
+section{padding:104px 0}
 section+section{border-top:1px solid var(--rule-2)}
-h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,2.8vw,32px);line-height:1.35;
-  letter-spacing:.01em;margin:0 0 14px}
-.sub{font-size:16px;line-height:1.8;color:var(--ink-2);max-width:38em;margin:0 0 44px}
+h2{font-weight:600;font-size:clamp(26px,3vw,36px);line-height:1.3;letter-spacing:.01em;margin:0 0 16px;text-wrap:balance}
+.sub{font-size:17px;line-height:1.9;color:var(--ink-2);max-width:36em;margin:0 0 48px}
 
-/* how it works: one column, hairlines, small numerals. Not three cards. */
-.steps{list-style:none;margin:0;padding:0;max-width:720px}
-.steps li{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:26px 0;border-top:1px solid var(--rule-2)}
+/* how it works: one column, hairlines, numerals a book would use. Not three cards. */
+.steps{list-style:none;margin:0;padding:0;max-width:760px}
+.steps li{display:grid;grid-template-columns:64px 1fr;gap:20px;padding:30px 0;border-top:1px solid var(--rule-2)}
 .steps li:last-child{border-bottom:1px solid var(--rule-2)}
-.steps .n{font-family:var(--serif);font-size:22px;color:var(--ink-3);line-height:1.3}
-.steps h3{margin:0 0 6px;font-size:17px;font-weight:600}
-.steps p{margin:0;color:var(--ink-2);line-height:1.8;max-width:34em}
-.steps code{font:13px/1 ui-monospace,Consolas,monospace;background:var(--paper-2);border:1px solid var(--rule-2);
+.steps .n{font-size:30px;color:var(--ink-3);line-height:1.2;letter-spacing:.05em}
+.steps h3{margin:0 0 6px;font-size:19px;font-weight:600;letter-spacing:.02em}
+.steps p{margin:0;color:var(--ink-2);line-height:1.9;max-width:36em}
+.steps code{font:13.5px/1 ui-monospace,Consolas,monospace;background:var(--paper-2);border:1px solid var(--rule-2);
   border-radius:var(--r);padding:2px 6px}
 
-/* the one idea: centered manifesto (the message is the design here) + a live demo */
-.idea{text-align:center}
-.idea .wrap{max-width:720px}
-.idea h2{margin-bottom:18px}
-.idea .sub{margin-left:auto;margin-right:auto;text-align:center;margin-bottom:40px}
-.idea .sheet{text-align:left;max-width:520px;margin:0 auto}
+/* the small things: an uneven grid of live pieces, each a real component, none a picture */
+.tiles{display:grid;grid-template-columns:repeat(12,1fr);gap:22px}
+.tile{background:var(--paper-2);border-radius:var(--r);box-shadow:var(--lift-s);padding:30px 30px 28px;
+  display:flex;flex-direction:column;gap:22px;min-width:0}
+.tile .show{flex:1;display:flex;align-items:center;min-height:96px}
+.tile h3{margin:0 0 6px;font-size:18px;font-weight:600;letter-spacing:.02em}
+.tile p{margin:0;font-size:15px;line-height:1.85;color:var(--ink-2)}
+.t-time{grid-column:span 7}
+.t-note{grid-column:span 5}
+.t-chop,.t-cloth,.t-stamp{grid-column:span 4}
+.when-demo{font-size:24px;letter-spacing:.06em;color:var(--ink-3)}
+.when-demo .ago{font-weight:600}
+.chops{display:flex;gap:18px;align-items:center}
+.chops .chop{position:static;width:48px;height:48px;font-size:26px}
+.chops .chop:nth-child(2){transform:rotate(4deg)}
+.chops .chop:nth-child(3){transform:rotate(-3deg);opacity:.6}
+.cloths{display:flex;gap:14px;align-items:flex-end;height:64px}
+.cloths i{display:block;width:10px;border-radius:3px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 78%,white),var(--c) 35%,color-mix(in srgb,var(--c) 82%,black))}
+.mini{position:relative;width:100%;max-width:240px;background:var(--paper-2);border-radius:var(--r);
+  box-shadow:var(--lift-s);padding:18px 18px 14px 20px;font-size:13px;line-height:1.9;color:var(--ink-2)}
+.mini::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--cloth)}
+.mini .stamp{right:14px;top:50%;width:44px;height:44px;margin-top:-22px;font-size:22px}
 
-/* what it does not do: two columns of definitions, no cards */
-.nots{display:grid;grid-template-columns:1fr 1fr;gap:28px 56px;max-width:860px}
-.nots div{padding-top:18px;border-top:1px solid var(--rule)}
-.nots b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;margin-bottom:6px}
-.nots p{margin:0;color:var(--ink-2);line-height:1.8}
+/* what it does not do: a definition list, terms in display size, no cards */
+.nots{display:grid;grid-template-columns:1fr 1fr;gap:0 64px;max-width:960px;margin:0}
+.nots div{display:grid;grid-template-columns:156px 1fr;gap:20px;padding:24px 0;border-top:1px solid var(--rule-2);align-items:baseline}
+.nots dt{font-size:22px;font-weight:600;letter-spacing:.04em;margin:0}
+.nots dd{margin:0;color:var(--ink-2);line-height:1.85;font-size:15.5px}
 
-/* on the phone: two real screenshots side by side */
-.shots{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:820px}
+/* on the phone: two real screenshots inside slim bezels */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:760px}
 .shots figure{margin:0}
-.shots img{border-radius:var(--r);border:1px solid var(--rule-2);box-shadow:var(--lift)}
-.shots figcaption{margin-top:12px;font-size:13.5px;color:var(--ink-3)}
+.phone{background:var(--bezel);border-radius:40px;padding:10px;box-shadow:var(--lift)}
+.phone img{border-radius:31px}
+.shots figcaption{margin-top:16px;font:13.5px/1.6 var(--sans);color:var(--ink-3);text-align:center;letter-spacing:.08em}
 
 /* limits + closing: one narrow column of plain prose, then the same CTA as the hero */
-.limits .wrap{max-width:720px}
-.limits p{color:var(--ink-2);line-height:1.85;margin:0 0 16px}
-.close{padding:96px 0 110px;text-align:center}
-.close h2{margin-bottom:26px}
+.limits .wrap{max-width:760px}
+.limits p{color:var(--ink-2);line-height:1.95;margin:0 0 18px;font-size:17px}
+.close{padding:110px 0 124px;text-align:center}
+.close h2{margin-bottom:30px}
+.close .seal{width:104px;height:104px;margin:0 auto 34px;border:3px solid var(--seal);border-radius:8px;
+  display:grid;place-content:center;color:var(--seal);font-size:26px;font-weight:600;line-height:1.1;
+  letter-spacing:.1em;text-indent:.1em;transform:rotate(-5deg);opacity:.85}
+.close .seal span{display:block}
 
-footer{border-top:1px solid var(--rule-2);padding:34px 0 48px;font-size:13.5px;color:var(--ink-3)}
+footer{border-top:1px solid var(--rule-2);padding:36px 0 52px;font:13.5px/1.7 var(--sans);color:var(--ink-3)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center}
-footer a{text-decoration:none;border-bottom:1px solid var(--rule);transition:color .2s var(--ease)}
+footer a{text-decoration:none;border-bottom:1px solid var(--rule);transition:color .25s var(--ease)}
 footer a:hover{color:var(--ink)}
 
 /* ── mobile: every multi-column layout collapses explicitly ──────────────────────────── */
-@media (max-width:860px){
-  .hero{padding:44px 0 60px}
-  .hero .wrap{grid-template-columns:1fr;gap:40px}
-  h1{font-size:clamp(30px,8vw,38px)}
-  section{padding:64px 0}
-  .nots,.shots{grid-template-columns:1fr}
+@media (max-width:900px){
+  .hero{padding:48px 0 72px}
+  .hero .wrap{grid-template-columns:1fr;gap:48px}
+  h1{font-size:clamp(32px,8.4vw,42px)}
+  .stack{margin-left:0}
+  .ghost.g1{transform:translateY(9px) scale(.975)}
+  .ghost.g2{transform:translateY(18px) scale(.95)}
+  section{padding:72px 0}
+  .tiles{gap:16px}
+  .t-time,.t-note,.t-chop,.t-cloth,.t-stamp{grid-column:span 12}
+  .nots{grid-template-columns:1fr}
+  .shots{grid-template-columns:1fr;gap:32px;max-width:340px}
   .bar nav .hide-sm{display:none}
 }
 @media (max-width:480px){
   .wrap{padding:0 20px}
-  .sheet{padding:22px 20px 20px}
-  .steps li{grid-template-columns:32px 1fr;gap:12px}
+  .page{padding:26px 22px 16px 26px}
+  .steps li{grid-template-columns:44px 1fr;gap:14px}
+  .nots div{grid-template-columns:1fr;gap:6px}
+  .tile{padding:24px 22px}
 }
 </style>
 </head>
 <body>
 
 <header><div class="wrap bar">
-  <a class="mark" href="./" style="text-decoration:none">回读</a>
+  <a class="brand" href="./">
+    <svg class="sealmark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3.5" fill="currentColor"/><text x="12" y="17.3" text-anchor="middle" font-size="14.5" font-weight="600" font-family="Huidu Serif,Noto Serif CJK SC,Source Han Serif SC,Songti SC,SimSun,serif" fill="var(--paper-2)">回</text></svg>
+    <span class="mark">回读</span>
+  </a>
   <nav>
     <a class="hide-sm" href="https://github.com/allenwu-blip/huidu">源码</a>
     <a class="btn small" href="app/">打开回读</a>
@@ -203,46 +313,37 @@ footer a:hover{color:var(--ink)}
 
 <main>
 
-<!-- hero: text left, the real card right ────────────────────────────────────────────── -->
-<section class="hero" style="padding-top:72px">
+<!-- hero ─────────────────────────────────────────────────────────────────────────────── -->
+<section class="hero">
   <div class="wrap">
     <div class="copy">
       <h1>把你划过的线，<br>每天推几条回来</h1>
-      <p class="lead">微信读书划完的线就沉底了，一次都不会再看见。回读每天挑五条送回来，让你看看那时候的自己在想什么。</p>
+      <p class="lead">微信读书划完的线就沉底了，一次都不会再看见。回读每天送五页回来，让你看看那时候的自己在想什么。</p>
       <div class="hero-cta">
         <a class="btn" href="app/">打开回读</a>
         <span class="quiet">不用注册，没有云，数据只在你自己的浏览器里</span>
       </div>
     </div>
 
-    <!-- This is the app's own card markup and CSS, rendered live, not a screenshot. The passage
-         is 鲁迅《野草·题辞》(public domain); the note is a labelled sample, not anyone's real one. -->
+    <!-- The app's own page markup and CSS, rendered live, not a screenshot. The passages are
+         public domain (鲁迅、朱自清); the notes are labelled samples, not anyone's real ones.
+         The two answers work: they stamp the page, turn it, and bring the next one. -->
     <div class="demo">
-      <article class="sheet" style="--cloth:hsl(148 22% 38%)">
-        <div class="meta">
-          <span class="title">野草</span>
-          鲁迅<span class="sep">·</span>题辞
-          <br>
-          <span class="ago">3 年前的今天</span><span class="sep">·</span>第一次见
-          <span class="tag">示例</span>
-        </div>
-        <blockquote>当我沉默着的时候，我觉得充实；我将开口，同时感到空虚。</blockquote>
-        <div class="reveal" data-open="false">
-          <button type="button" aria-expanded="false"><span class="chev">›</span>你当时写了一句话</button>
-          <div class="body"><div><div class="note">那年冬天读的，没读懂，先划下来。</div></div></div>
-        </div>
-        <div class="answers"><span>再来</span><span>记住了</span></div>
-      </article>
+      <div class="stack">
+        <div class="ghost g2"></div><div class="ghost g1"></div>
+        <article class="page" id="demo" style="--cloth:hsl(148 22% 38%)"></article>
+      </div>
+      <p class="try">点「记住了」或「再来」试试</p>
     </div>
   </div>
 </section>
 
-<!-- how it works: vertical, three verbs, no cards ────────────────────────────────────── -->
+<!-- how it works ─────────────────────────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <h2>三步，全部在你自己的电脑上</h2>
-    <p class="sub">微信读书 App 没有「导出全部笔记」这个功能，所以做了一个书签来代替。它不是插件，不用安装，只在微信读书的网页上运行。</p>
-    <ol class="steps">
+    <h2 class="in">三步，全部在你自己的电脑上</h2>
+    <p class="sub in">微信读书 App 没有「导出全部笔记」这个功能，所以做了一个书签来代替。它不是插件，不用安装，只在微信读书的网页上运行。</p>
+    <ol class="steps in">
       <li>
         <span class="n">一</span>
         <div>
@@ -260,71 +361,79 @@ footer a:hover{color:var(--ink)}
       <li>
         <span class="n">三</span>
         <div>
-          <h3>每天五条</h3>
-          <p>看完点「记住了」或「再来」。记住了的三天后再见，再来的明天见。今天的五条读完，就到此为止。</p>
+          <h3>每天五页</h3>
+          <p>看完点「记住了」或「再来」。记住了的三天后再见，再来的明天见。今天的五页翻完，就到此为止。</p>
         </div>
       </li>
     </ol>
   </div>
 </section>
 
-<!-- the one idea: centered, because the sentence is the design ───────────────────────── -->
-<section class="idea">
+<!-- the small things ─────────────────────────────────────────────────────────────────── -->
+<section>
   <div class="wrap">
-    <h2>你当时写的想法，默认是收起的</h2>
-    <p class="sub">卡片先只给你看当年划的原文，下面一行小字「你当时写了一句话」，点一下才展开。因为真正让人停一下的不是书里那句话，是你当时到底在想什么。一上来全摊开，那一下就没了。</p>
-    <article class="sheet" style="--cloth:hsl(148 22% 38%)">
-      <div class="meta">
-        <span class="title">野草</span>
-        鲁迅<span class="sep">·</span>希望
-        <br>
-        <span class="ago">2 年前</span><span class="sep">·</span>第 3 次见
-        <span class="tag">示例</span>
+    <h2 class="in">它在意的几处小事</h2>
+    <p class="sub in">一页纸上能做的，都做了。下面每一样都是应用里真实的样子，不是画出来的。</p>
+    <div class="tiles">
+      <div class="tile t-time in">
+        <div class="show"><div class="when-demo" style="--cloth:hsl(210 28% 44%)"><span class="ago">三年前的今天</span><span class="sep">·</span>第三次见</div></div>
+        <div><h3>日期不是数字</h3><p>它说「三年十个月前」，不说 2022-11-08。恰好同月同日的那天，它会说「三年前的今天」。让人停一下的往往就是这一行。</p></div>
       </div>
-      <blockquote>绝望之为虚妄，正与希望相同。</blockquote>
-      <div class="reveal" data-open="false">
-        <button type="button" aria-expanded="false"><span class="chev">›</span>你当时写了一句话</button>
-        <div class="body"><div><div class="note">考研出分那天划的。现在再看，好像懂了一点。</div></div></div>
+      <div class="tile t-note in">
+        <div class="show"><div class="note" style="--cloth:hsl(38 48% 45%);margin:0">那年冬天读的，没读懂，先划下来。</div></div>
+        <div><h3>你的话是手写的</h3><p>书里的字是印的，你当时写的想法用楷体写在页边，像一条旁批。默认收着，点开才看。</p></div>
       </div>
-    </article>
+      <div class="tile t-chop in">
+        <div class="show"><div class="chops"><span class="chop">野</span><span class="chop">骆</span><span class="chop">背</span></div></div>
+        <div><h3>每本书一枚章</h3><p>取书名的第一个字，盖在页眉。翻到哪本书，一眼就知道。</p></div>
+      </div>
+      <div class="tile t-cloth in">
+        <div class="show"><div class="cloths"><i style="--c:hsl(18 42% 46%);height:64px"></i><i style="--c:hsl(148 22% 38%);height:52px"></i><i style="--c:hsl(210 28% 44%);height:60px"></i><i style="--c:hsl(38 48% 45%);height:44px"></i><i style="--c:hsl(265 20% 46%);height:56px"></i></div></div>
+        <div><h3>书布色</h3><p>每本书按名字分到一种布色，十种里挑的，都压得住，不撞色也不刺眼。</p></div>
+      </div>
+      <div class="tile t-stamp in">
+        <div class="show"><div class="mini" style="--cloth:hsl(350 30% 46%)">其实地上本没有路，走的人多了，也便成了路。<span class="stamp still">记</span></div></div>
+        <div><h3>先盖章，再翻页</h3><p>点「记住了」盖一枚「记」，点「再来」盖一枚「再」，然后这一页翻过去。还剩几页，就叠在下面。</p></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- what it does not do: two columns, plain ──────────────────────────────────────────── -->
+<!-- what it does not do ──────────────────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <h2>它不做的事</h2>
-    <p class="sub">这个项目没有服务器。下面每一条都不是「暂时没做」，是不打算做。</p>
-    <div class="nots">
-      <div><b>不做账号</b><p>打开就能用。没有注册，没有登录，也没有人知道你在读什么。</p></div>
-      <div><b>不做云同步</b><p>划线只存在这台设备的浏览器里。换设备就再导一次，文件还在你手上。</p></div>
-      <div><b>不做 AI 生成</b><p>它不总结，不解读，不替你写。回来的每一个字都是你自己划过、写过的。</p></div>
-      <div><b>不做社交</b><p>没有关注，没有点赞，没有排行。这是你一个人和过去的自己之间的事。</p></div>
-    </div>
+    <h2 class="in">它不做的事</h2>
+    <p class="sub in">这个项目没有服务器。下面每一条都不是「暂时没做」，是不打算做。</p>
+    <dl class="nots in">
+      <div><dt>不做账号</dt><dd>打开就能用。没有注册，没有登录，也没有人知道你在读什么。</dd></div>
+      <div><dt>不做云同步</dt><dd>划线只存在这台设备的浏览器里。换设备就再导一次，文件还在你手上。</dd></div>
+      <div><dt>不做 AI 生成</dt><dd>它不总结，不解读，不替你写。回来的每一个字都是你自己划过、写过的。</dd></div>
+      <div><dt>不做社交</dt><dd>没有关注，没有点赞，没有排行。这是你一个人和过去的自己之间的事。</dd></div>
+    </dl>
   </div>
 </section>
 
 <!-- on the phone: real screenshots ───────────────────────────────────────────────────── -->
 <section>
   <div class="wrap">
-    <h2>加到主屏幕，断网也能读</h2>
-    <p class="sub">它是一个网页，但可以像应用一样装在手机上。装完全屏，没有浏览器边框，在地铁里没信号也照样能翻。</p>
+    <h2 class="in">加到主屏幕，断网也能读</h2>
+    <p class="sub in">它是一个网页，但可以像应用一样装在手机上。装完全屏，没有浏览器边框，在地铁里没信号也照样能翻。</p>
     <div class="shots">
       <!-- Real captures of the app at 390x844 @2x, loaded with public-domain sample highlights
            (鲁迅、朱自清、老舍、郁达夫), never with anyone's own notes. Dark variants follow the
            system setting the same way the page itself does. -->
-      <figure>
-        <picture>
+      <figure class="in">
+        <div class="phone"><picture>
           <source srcset="img/review-dark.png" media="(prefers-color-scheme: dark)">
-          <img src="img/review.png" width="390" height="844" alt="回读的今日回顾页：一条划线，下面是收起的「你当时写了一句话」，再下面是再来和记住了两个按钮" loading="lazy">
-        </picture>
+          <img src="img/review.png" width="390" height="844" alt="回读的今日页：一页书页，页眉是书名和藏书章，中间是划线原文，下面是收起的「你当时写了一句话」，再下面是再来和记住了" loading="lazy">
+        </picture></div>
         <figcaption>今日</figcaption>
       </figure>
-      <figure>
-        <picture>
+      <figure class="in">
+        <div class="phone"><picture>
           <source srcset="img/library-dark.png" media="(prefers-color-scheme: dark)">
-          <img src="img/library.png" width="390" height="844" alt="回读的书架页：按书分组的划线列表，每本书前有一条颜色标记" loading="lazy">
-        </picture>
+          <img src="img/library.png" width="390" height="844" alt="回读的书架页：按书分组的划线列表，每本书前有一条布色书脊" loading="lazy">
+        </picture></div>
         <figcaption>书架</figcaption>
       </figure>
     </div>
@@ -334,17 +443,18 @@ footer a:hover{color:var(--ink)}
 <!-- honest limits, plain prose ────────────────────────────────────────────────────────── -->
 <section class="limits">
   <div class="wrap">
-    <h2>先说清楚它的短处</h2>
-    <p>取数走的是微信读书网页端的非官方接口。人家一改，书签就会失效。这是这条路最大的风险，GitHub 上现有的几个导出工具走的是同一条路，同样脆弱。</p>
-    <p>网页端拿不到纯划线，只拿得到「划线加想法」的配对。也就是说，你只划了线没写字的那些，暂时进不来。</p>
-    <p>Kindle 和 Cubox 还没做。手上没有真实样本，不想凭文档猜着写解析器。如果你愿意提供一份自己的，我来写。</p>
+    <h2 class="in">先说清楚它的短处</h2>
+    <p class="in">取数走的是微信读书网页端的非官方接口。人家一改，书签就会失效。这是这条路最大的风险，GitHub 上现有的几个导出工具走的是同一条路，同样脆弱。</p>
+    <p class="in">网页端拿不到纯划线，只拿得到「划线加想法」的配对。也就是说，你只划了线没写字的那些，暂时进不来。</p>
+    <p class="in">Kindle 和 Cubox 还没做。手上没有真实样本，不想凭文档猜着写解析器。如果你愿意提供一份自己的，我来写。</p>
   </div>
 </section>
 
 <section class="close">
   <div class="wrap">
-    <h2>去把那些线找回来</h2>
-    <a class="btn" href="app/">打开回读</a>
+    <div class="seal in" aria-hidden="true"><span>今日</span><span>已毕</span></div>
+    <h2 class="in">去把那些线找回来</h2>
+    <a class="btn in" href="app/">打开回读</a>
   </div>
 </section>
 
@@ -357,6 +467,8 @@ footer a:hover{color:var(--ink)}
 </div></footer>
 
 <script>
+document.documentElement.classList.add('js');
+
 // Migration: the app used to live at this exact path with a service worker scoped here.
 // A browser that still holds that registration would keep serving the old cached app instead
 // of this page, so drop any worker whose scope is the landing itself. The app's own worker
@@ -367,16 +479,69 @@ if ('serviceWorker' in navigator) {
   }).catch(() => {});
 }
 
-// The two demo cards reveal on click, exactly like the app. This is the product's one idea,
-// so the landing lets you feel it rather than describing it.
-for (const r of document.querySelectorAll('.reveal')) {
-  const b = r.querySelector('button');
+// The hero page is the app's own component with three public-domain passages behind it.
+// Answering stamps it, turns it, and brings the next: the product's whole loop, felt once.
+const DEMO = [
+  { title: '野草', author: '鲁迅', chapter: '题辞', ago: '三年前的今天', seen: '第一次见', glyph: '野',
+    cloth: 'hsl(148 22% 38%)', text: '当我沉默着的时候，我觉得充实；我将开口，同时感到空虚。',
+    note: '那年冬天读的，没读懂，先划下来。' },
+  { title: '呐喊', author: '鲁迅', chapter: '故乡', ago: '三年十个月前', seen: '第二次见', glyph: '呐',
+    cloth: 'hsl(350 30% 46%)', text: '其实地上本没有路，走的人多了，也便成了路。',
+    note: '小学课本里读过，当时不懂为什么这句要放在最后。' },
+  { title: '背影', author: '朱自清', chapter: '匆匆', ago: '两年三个月前', seen: '第一次见', glyph: '背',
+    cloth: 'hsl(38 48% 45%)', text: '燕子去了，有再来的时候；杨柳枯了，有再青的时候；桃花谢了，有再开的时候。',
+    note: '小学背过的课文，现在才觉得它是在说别的。' },
+];
+const demo = document.getElementById('demo');
+let di = 0, busy = false;
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function drawDemo(arrive){
+  const d = DEMO[di];
+  demo.style.setProperty('--cloth', d.cloth);
+  demo.className = 'page' + (arrive ? ' arriving' : '');
+  demo.innerHTML = `
+    <div class="head">
+      <div class="l1"><span class="bk">${esc(d.title)}</span><span class="au">${esc(d.author)}</span></div>
+      <span class="chop" aria-hidden="true">${d.glyph}</span>
+      <div class="l2"><span class="ch">${esc(d.chapter)}</span>
+        <span class="when"><span class="ago">${d.ago}</span><span class="sep">·</span>${d.seen}</span></div>
+    </div>
+    <blockquote>${esc(d.text)}</blockquote>
+    <div class="reveal" data-open="false">
+      <button type="button" aria-expanded="false"><span class="chev">›</span>你当时写了一句话</button>
+      <div class="body"><div><div class="note">${esc(d.note)}</div></div></div>
+    </div>
+    <div class="answers">
+      <button type="button" class="again" data-a="again">再来<small>明天见</small></button>
+      <button type="button" class="got" data-a="got">记住了<small>三天后见</small></button>
+    </div>`;
+  const r = demo.querySelector('.reveal'), b = r.querySelector('button');
   b.addEventListener('click', () => {
     const open = r.dataset.open !== 'true';
     r.dataset.open = String(open);
     b.setAttribute('aria-expanded', String(open));
   });
+  for (const a of demo.querySelectorAll('[data-a]')) a.addEventListener('click', () => answer(a.dataset.a));
 }
+function answer(o){
+  if (busy) return;
+  busy = true;
+  const quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stamp = document.createElement('span');
+  stamp.className = 'stamp' + (o === 'got' ? '' : ' again');
+  stamp.textContent = o === 'got' ? '记' : '再';
+  demo.appendChild(stamp);
+  demo.classList.add(o === 'got' ? 'leaving' : 'leaving-again');
+  setTimeout(() => { di = (di + 1) % DEMO.length; drawDemo(true); busy = false; }, quick ? 220 : 900);
+}
+drawDemo(false);
+
+// Sections settle in as they arrive. IntersectionObserver, never a scroll listener; and under
+// reduced motion the .in class has no styles at all, so everything is simply there.
+const io = new IntersectionObserver((es) => {
+  for (const e of es) if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+}, { rootMargin: '0px 0px -8% 0px' });
+for (const el of document.querySelectorAll('.in')) io.observe(el);
 </script>
 </body>
 </html>

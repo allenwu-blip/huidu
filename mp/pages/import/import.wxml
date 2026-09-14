@@ -4,7 +4,7 @@
   <view class="sub">全程在你自己的手机上，没有服务器，没有账号，什么都不会上传。</view>
 
   <view class="step">
-    <view class="n">1</view>
+    <view class="n">一</view>
     <view class="b">
       <view class="h">在电脑上导出你的划线</view>
       <view class="p">打开下面这个网页，按里面的说明把「取回我的划线」拖到浏览器书签栏，再到 weread.qq.com 上点一下，会下载一个 json 文件。</view>
@@ -13,7 +13,7 @@
   </view>
 
   <view class="step">
-    <view class="n">2</view>
+    <view class="n">二</view>
     <view class="b">
       <view class="h">把那个 json 发到微信</view>
       <view class="p">在电脑微信里发给「文件传输助手」就行，手机上就能收到。</view>
@@ -21,7 +21,7 @@
   </view>
 
   <view class="step">
-    <view class="n">3</view>
+    <view class="n">三</view>
     <view class="b">
       <view class="h">回到这里选中它</view>
       <view class="pick" bindtap="chooseFile">从聊天里选文件</view>
@@ -34,7 +34,7 @@
   </view>
 
   <view wx:if="{{total}}" class="tally">
-    现在共 {{total}} 条，来自 {{books}} 本书<text wx:if="{{usedKB}}">　·　占用 {{usedKB}} KB</text>
+    现在共 {{total}} 条，来自 {{books}} 本书<text wx:if="{{usedKB}}">，占用 {{usedKB}} KB</text>
   </view>
 
   <view class="tools">

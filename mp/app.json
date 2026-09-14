@@ -6,15 +6,15 @@
   ],
   "window": {
     "navigationBarTitleText": "回读",
-    "navigationBarBackgroundColor": "#f6f6f4",
+    "navigationBarBackgroundColor": "#ebe5d8",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f6f6f4",
+    "backgroundColor": "#ebe5d8",
     "backgroundTextStyle": "light"
   },
   "tabBar": {
-    "color": "#8a897f",
-    "selectedColor": "#1c1c1a",
-    "backgroundColor": "#f8f8f6",
+    "color": "#8a8071",
+    "selectedColor": "#231f19",
+    "backgroundColor": "#f0ebe0",
     "borderStyle": "white",
     "list": [
       { "pagePath": "pages/review/review", "text": "今日" },

@@ -16,8 +16,9 @@ from PIL import Image, ImageDraw, ImageFont
 OUT = Path(__file__).resolve().parent.parent / "app" / "icons"
 OUT.mkdir(parents=True, exist_ok=True)
 
-PAPER = (246, 246, 244)
-SEAL = (176, 48, 42)
+# the sheet colour (--paper-2) and the seal, in step with app/index.html tokens
+PAPER = (248, 245, 238)
+SEAL = (178, 58, 46)
 SIZES = [192, 512]
 
 FONT_CANDIDATES = [

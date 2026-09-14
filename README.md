@@ -60,6 +60,9 @@
 - **网页端拿不到纯划线**（没有写想法的那种），只能拿到「划线 + 想法」的配对。
 - **Kindle 的 `My Clippings.txt` 和 Cubox 还没做。** 手上没有真实样本，
   不想凭文档猜着写解析器。如果你愿意提供一份自己的（脱敏后），我来写。
+- **应用里的字体靠系统。** 划线用宋体、你写的想法用楷体，iOS 和 Mac 上都有，
+  Windows 装了中文字体也有；多数 Android 没有衬线和楷体，会退回系统默认字体。
+  应用的文字是你自己的，没法像落地页那样把字体裁小了带上。
 
 ## 开发
 
@@ -67,6 +70,9 @@
 node --test                        # 跑测试
 node tools/build-bookmarklet.mjs   # 生成书签
 node tools/build.mjs               # 打包：应用到 docs/app/，落地页到 docs/index.html
+python tools/subset_fonts.py       # 落地页字体裁剪（源字体放 fonts-src/，不进仓库）
+python tools/make_icons.py         # 图标
+python tools/make_share_card.py    # 分享卡
 ```
 
 ES 模块不能走 `file://`，本地开发起个静态服务器指向仓库根目录即可。
@@ -85,6 +91,8 @@ ES 模块不能走 `file://`，本地开发起个静态服务器指向仓库根�
 | `src/review.mjs` | 回顾引擎。纯函数，`now` 一律外部传入，不读系统时钟 |
 | `app/` | 应用界面、IndexedDB、呈现层判断 |
 | `landing/` | 落地页。链接分享的是它，应用在它下面一层 |
+| `landing/fonts/` | 落地页用的思源宋体和霞鹜文楷，只含页面用到的字（OFL 许可） |
+| `mp/` | 微信小程序，逻辑由 `src/` 生成，界面单独写 |
 | `tools/bookmarklet.js` | 取数书签的可读源码 |
 | `docs/index.html` | 落地页产物 |
 | `docs/app/index.html` | 应用产物，单个自包含 HTML，带 Service Worker 与 manifest |

@@ -19,15 +19,19 @@ Page({
     done: false,      // today's batch finished
     batch: [],
     at: 0,
+    left: 0,          // pages still behind this one today, drawn as a pile (capped at 2)
     card: null,
-    cloth: '#8a897f',
+    cloth: '#8a8071',
+    glyph: '书',      // the 藏书章 glyph: first character of the title
     ago: '',
-    month: '',
     seen: '',
+    folio: '',
+    dueGot: '',       // what 记住了 would do, said on the button
+    dueAgain: '',     // what 再来 would do
     hang: false,
     noteOpen: false,
-    echo: '',
-    echoDays: 0,
+    stamp: '',        // '记' or '再' while the page is being stamped and turned
+    leaving: '',      // 'got' | 'again' drives the exit animation
     busy: false,
   },
 
@@ -59,16 +63,27 @@ Page({
       return;
     }
     const now = ui.nowSec();
+    // grade() is pure, so asking it what each button would do costs nothing, and the two
+    // buttons stop looking interchangeable
+    const due = function (outcome) {
+      const d = review.grade(c, outcome, now).review.interval;
+      return d === 1 ? '明天见' : ui.cnNum(d) + '天后见';
+    };
     this.setData({
       at: i,
+      left: Math.min(2, this.data.batch.length - i - 1),
       card: c,
       cloth: ui.clothCss(c.bookId),
-      ago: ui.agoText(c.createdAt, now),
-      month: ui.monthText(c.createdAt),
-      seen: review.isNew(c) ? '第一次见' : '第 ' + (c.review.reps + 1) + ' 次见',
+      glyph: ui.chopGlyph(c.bookTitle),
+      ago: ui.cnify(ui.agoText(c.createdAt, now)),
+      seen: review.isNew(c) ? '第一次见' : '第' + ui.cnNum(c.review.reps + 1) + '次见',
+      folio: ui.cnNum(i + 1) + '／' + ui.cnNum(this.data.batch.length),
+      dueGot: due('got'),
+      dueAgain: due('again'),
       hang: ui.hangsFirstGlyph(c.text),
       noteOpen: false,
-      echo: '',
+      stamp: '',
+      leaving: '',
     });
   },
 
@@ -92,20 +107,15 @@ Page({
     const graded = review.grade(this.data.card, outcome, now);
     store.putOne(graded);
 
-    // Say what the choice did. Without this the two buttons feel identical even when they
-    // schedule differently, because the card just disappears either way — a reader said so.
-    const d = graded.review.interval;
-    this.setData({
-      echo: (outcome === 'got' ? '记住了' : '再来') + '　' + (d === 1 ? '明天见' : d + ' 天后见'),
-      echoDays: d,
-    });
+    // stamp the page, then let it turn; the next one rises when this one is gone
+    this.setData({ stamp: outcome === 'got' ? '记' : '再', leaving: outcome });
 
     setTimeout(() => {
       const next = this.data.at + 1;
-      this.setData({ busy: false, echo: '' });
+      this.setData({ busy: false });
       if (next >= this.data.batch.length) this.load();
       else this.show(next);
-    }, 700);
+    }, 900);
   },
 
   goImport() {

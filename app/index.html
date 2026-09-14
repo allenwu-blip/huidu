@@ -11,217 +11,284 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="回读">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#f6f6f4" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ece6d9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
 <meta name="description" content="把你在微信读书里划过的线，每天推几条回来给你看。数据只存在你自己的浏览器里。">
 <!-- Share metadata lives on the landing page (../), which is what people actually link to.
      The app itself is not a share target, so it carries no og:/twitter: tags. -->
 <meta name="robots" content="noindex">
 <style>
+/* ── 纸与墨 ──────────────────────────────────────────────────────────────────────────────
+   The object on screen is a page, not a card in an app. Everything follows from that:
+   the ground is a shelf-coloured paper a shade darker than the sheet, so the sheet lifts;
+   the sheet has a binding side (cloth strip, gutter shadow) and a free side; the reader's
+   own note is a 旁批 in 楷体 beside the printed text; a 藏书章 stamps every book; answering
+   stamps the page and turns it. Dark mode is 墨: warm charcoal and bone, never grey-on-black.
+   Every colour is a token here; change the palette in this block and nothing else. */
 :root{
-  /* Neutral ground, neutral ink, one accent. The earlier cream-paper + espresso + oxblood set
-     is the palette every generated "bookish" site reaches for, and none of the real reading
-     apps (微信读书, flomo, Readwise, Matter) use it. The seal stays: it is the identity, and on
-     a neutral page it is the only warm thing, which is what makes it read. */
-  --paper:#f6f6f4; --paper-2:#fcfcfb; --ink:#1c1c1a; --ink-2:#57564f; --ink-3:#8a897f;
-  --rule:#dededa; --rule-2:#ebebe7; --seal:#b0302a; --ok:#3f6b4d; --again:#a3452f;
-  --lift:0 1px 1px rgba(28,28,26,.04), 0 10px 30px -12px rgba(28,28,26,.16);
-  --lift-2:0 2px 4px rgba(28,28,26,.05), 0 24px 60px -24px rgba(28,28,26,.26);
-  --serif:"Source Han Serif SC","Noto Serif CJK SC","Songti SC",Georgia,"SimSun",serif;
-  --sans:-apple-system,"Segoe UI Variable Text","Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  --ease:cubic-bezier(.22,.61,.36,1);
+  --paper:#ebe5d8; --paper-2:#f8f5ee; --paper-3:#f0ebe0;
+  --ink:#231f19; --ink-2:#5a5245; --ink-3:#8a8071;
+  --rule:#d8d0bf; --rule-2:#e4ddce;
+  --seal:#b23a2e; --ok:#4b7657; --again:#a8583f;
+  --sh:60 44 18;
+  --lift:inset 0 1px 0 rgba(255,255,255,.7), 0 0 0 1px rgba(var(--sh)/.05), 0 1px 2px rgba(var(--sh)/.06),
+         0 14px 34px -16px rgba(var(--sh)/.3), 0 36px 70px -36px rgba(var(--sh)/.22);
+  --lift-s:0 0 0 1px rgba(var(--sh)/.05), 0 8px 24px -14px rgba(var(--sh)/.22);
+  --glow:rgba(255,255,255,.55);
+  --serif:"Noto Serif CJK SC","Source Han Serif SC","Songti SC","STSong","Noto Serif SC",Georgia,"SimSun",serif;
+  --kai:"LXGW WenKai","霞鹜文楷","Kaiti SC","STKaiti","KaiTi","楷体","Noto Serif CJK SC","Songti SC",serif;
+  --sans:-apple-system,"PingFang SC","Segoe UI Variable Text","Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --spring:cubic-bezier(.2,1.3,.35,1);
+  --r:4px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --paper:#141413; --paper-2:#1c1c1a; --ink:#e8e8e4; --ink-2:#a3a29a; --ink-3:#75746c;
-  --rule:#2c2c29; --rule-2:#232320; --seal:#d0574a; --ok:#7fa98c; --again:#c9806c;
-  --lift:0 1px 1px rgba(0,0,0,.3), 0 10px 30px -12px rgba(0,0,0,.6);
-  --lift-2:0 2px 4px rgba(0,0,0,.35), 0 24px 60px -24px rgba(0,0,0,.7);
+  --paper:#16130f; --paper-2:#1f1b16; --paper-3:#1a1713;
+  --ink:#ece4d3; --ink-2:#b3a996; --ink-3:#7d7364;
+  --rule:#37312a; --rule-2:#2b2621;
+  --seal:#d8624e; --ok:#88ae93; --again:#cf8b6f;
+  --sh:0 0 0;
+  --lift:inset 0 1px 0 rgba(255,255,255,.045), 0 0 0 1px rgba(255,255,255,.04),
+         0 14px 34px -16px rgba(0,0,0,.7), 0 36px 70px -36px rgba(0,0,0,.6);
+  --lift-s:0 0 0 1px rgba(255,255,255,.035), 0 8px 24px -14px rgba(0,0,0,.6);
+  --glow:rgba(255,255,255,.035);
 }}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  background-image:
-    radial-gradient(ellipse 120% 80% at 50% -10%, color-mix(in srgb,var(--paper-2) 70%,transparent), transparent 60%);
-  background-attachment:fixed;
+  background-image:radial-gradient(110% 70% at 50% -12%, var(--glow), transparent 62%);
+  background-attachment:fixed;min-height:100dvh;
 }
-/* a whisper of grain, procedural so there is no asset to ship */
+/* paper grain: a fixed, pointer-events-none layer, procedural, no asset. Multiply on paper so
+   it darkens like fibre; overlay on 墨 so it lifts instead of vanishing into the black. */
 body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.028'/%3E%3C/svg%3E");
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.75;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.085'/%3E%3C/svg%3E");
 }
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) body::before{mix-blend-mode:overlay;opacity:.5}}
 main,header{position:relative;z-index:1}
+:focus-visible{outline:2px solid var(--seal);outline-offset:3px;border-radius:2px}
+button{-webkit-tap-highlight-color:transparent}
 
-/* ── header ─────────────────────────────────────────────── */
+/* ── header ────────────────────────────────────────────────────────────────────────────── */
 header{position:sticky;top:0;z-index:9;
-  background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(14px) saturate(1.2);
-  border-bottom:1px solid var(--rule-2)}
-.bar{max-width:660px;margin:0 auto;padding:15px 22px;display:flex;align-items:baseline;gap:16px}
-.mark{font-family:var(--serif);font-size:19px;letter-spacing:.22em;color:var(--ink);
-  text-indent:.22em;font-weight:500}
+  background:color-mix(in srgb,var(--paper) 78%,transparent);backdrop-filter:blur(16px) saturate(1.15);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);border-bottom:1px solid var(--rule-2)}
+.bar{max-width:720px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:11px;color:inherit;text-decoration:none}
+.sealmark{width:22px;height:22px;color:var(--seal);transform:rotate(-6deg);flex:none}
+.mark{font-family:var(--serif);font-size:18px;letter-spacing:.2em;font-weight:500;line-height:1}
 nav{margin-left:auto;display:flex;gap:2px}
-nav button{background:none;border:0;color:var(--ink-3);padding:5px 11px;border-radius:7px;
-  font:inherit;font-size:13.5px;cursor:pointer;position:relative;transition:color .2s var(--ease)}
+nav button{background:none;border:0;color:var(--ink-3);padding:6px 11px;border-radius:3px;
+  font:inherit;font-size:13.5px;letter-spacing:.04em;cursor:pointer;position:relative;
+  transition:color .25s var(--ease)}
 nav button:hover{color:var(--ink-2)}
 nav button[aria-current=true]{color:var(--ink)}
-nav button[aria-current=true]::after{content:"";position:absolute;left:11px;right:11px;bottom:1px;
+nav button[aria-current=true]::after{content:"";position:absolute;left:11px;right:11px;bottom:2px;
   height:1.5px;background:var(--seal);border-radius:2px}
 
-main{max-width:660px;margin:0 auto;padding:26px 22px 80px}
+main{max-width:720px;margin:0 auto;padding:30px 22px 96px}
+/* 今日 is one object held up to the reader: it sits at the optical centre of the screen, a
+   little above the geometric one, instead of hanging off the header with a void underneath */
+.stage{min-height:calc(100dvh - 210px);display:flex;flex-direction:column;justify-content:center}
 
-/* ── progress dots ──────────────────────────────────────── */
-.dots{display:flex;gap:7px;justify-content:center;margin:0 0 30px;height:6px;align-items:center}
-.dots i{width:6px;height:6px;border-radius:99px;background:var(--rule);display:block;
-  transition:background .35s var(--ease),transform .35s var(--ease)}
-.dots i.done{background:var(--ink-3)}
-.dots i.here{background:var(--seal);transform:scale(1.45)}
+/* ── the pile: what is left today, stacked behind the page ─────────────────────────────── */
+.pile{position:relative;isolation:isolate;width:100%;max-width:640px;margin:0 auto}
+.pile::before,.pile::after{content:"";position:absolute;left:10px;right:10px;top:0;bottom:0;z-index:-1;
+  background:var(--paper-3);border-radius:var(--r);box-shadow:var(--lift-s);
+  transform:translateY(9px);transition:opacity .4s var(--ease)}
+.pile::after{left:20px;right:20px;transform:translateY(18px);opacity:.75}
+.pile[data-left="0"]::before,.pile[data-left="0"]::after,.pile[data-left="1"]::after{opacity:0}
 
-/* ── the card ───────────────────────────────────────────── */
-.sheet{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:3px;
-  padding:30px 32px 26px;box-shadow:var(--lift);position:relative;
-  animation:rise .5s var(--ease) both}
-.sheet::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--cloth,var(--ink-3));border-radius:3px 0 0 3px;opacity:.85}
-@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.994)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
-.sheet.leaving{animation:leave .3s var(--ease) forwards}
-@keyframes leave{to{opacity:0;transform:translateY(-14px) scale(.99)}}
-.sheet.leaving-again{animation:leaveB .3s var(--ease) forwards}
-@keyframes leaveB{to{opacity:0;transform:translateY(14px) scale(.99)}}
+/* ── the page ──────────────────────────────────────────────────────────────────────────── */
+.page{position:relative;background:var(--paper-2);border-radius:var(--r);
+  padding:30px 30px 20px 34px;box-shadow:var(--lift);
+  /* the gutter: a page is darker where it meets the binding */
+  background-image:linear-gradient(90deg,rgba(var(--sh)/.055),rgba(var(--sh)/0) 44px);
+  transform-origin:left center;animation:rise .55s var(--ease) both}
+.page::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:var(--r) 0 0 var(--r);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cloth,var(--ink-3)) 78%,white),
+    var(--cloth,var(--ink-3)) 30%,color-mix(in srgb,var(--cloth,var(--ink-3)) 82%,black))}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.page.leaving{animation:turn .5s var(--ease) .34s forwards}
+@keyframes turn{to{opacity:0;transform:perspective(1400px) rotateY(-72deg) translateX(-8px)}}
+.page.leaving-again{animation:back .46s var(--ease) .34s forwards}
+@keyframes back{to{opacity:0;transform:translateY(24px) scale(.965)}}
 
-.meta{font-size:12.5px;line-height:1.75;color:var(--ink-3);margin-bottom:22px}
-.meta .title{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:500;
-  display:block;margin-bottom:2px;letter-spacing:.01em}
-.meta .sep{opacity:.4;margin:0 6px}
+/* running head: title and author, then chapter and time. The 藏书章 sits where a stamp would. */
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l1 chop" "l2 chop";
+  gap:6px 16px;align-items:center;padding-bottom:14px;margin-bottom:24px;border-bottom:1px solid var(--rule-2)}
+.head .l1{grid-area:l1;min-width:0;line-height:1.4}
+.head .bk{font-family:var(--serif);font-size:15.5px;font-weight:500;color:var(--ink);letter-spacing:.04em}
+.head .au{font-size:12.5px;color:var(--ink-3);margin-left:10px;letter-spacing:.06em;white-space:nowrap}
+.head .l2{grid-area:l2;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--ink-3);letter-spacing:.03em;line-height:1.5}
+.head .ch{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.head .when{white-space:nowrap}
+.head .sep{opacity:.45;margin:0 6px}
 .ago{color:var(--cloth,var(--ink-2));font-weight:500}
+.chop{grid-area:chop;width:36px;height:36px;border:1.5px solid var(--seal);border-radius:3px;color:var(--seal);
+  font-family:var(--serif);font-size:20px;font-weight:500;line-height:1;display:grid;place-items:center;
+  transform:rotate(-7deg);opacity:.74;
+  background:radial-gradient(circle at 30% 28%,color-mix(in srgb,var(--seal) 12%,transparent),transparent 70%)}
 
-/* 19.5/1.88 keeps a long highlight and both buttons on one laptop screen without the type
-   feeling cramped. Anything looser and the reader has to scroll to answer. */
-blockquote{margin:0;font-family:var(--serif);font-size:19.5px;line-height:1.88;color:var(--ink);
-  letter-spacing:.012em;white-space:pre-wrap;word-break:break-word;hyphens:auto}
+/* the printed text. 20.5/1.95 on a phone, a touch larger on a laptop; justified like a book. */
+blockquote{margin:0;font-family:var(--serif);font-size:20.5px;line-height:1.95;color:var(--ink);
+  letter-spacing:.02em;white-space:pre-line;word-break:break-word;text-align:justify}
 blockquote.hang{text-indent:-.62em}
+@media (min-width:720px){blockquote{font-size:22.5px}}
 
-/* the reveal: the small idea the whole product turns on */
-.reveal{margin-top:26px}
-.reveal button{display:inline-flex;align-items:center;gap:7px;background:none;border:0;padding:0;
-  color:var(--ink-3);font:inherit;font-size:13.5px;cursor:pointer;transition:color .2s var(--ease)}
-.reveal button:hover{color:var(--cloth,var(--ink-2))}
-.reveal button .chev{transition:transform .3s var(--ease);display:inline-block;font-size:11px}
+/* the reveal: the small idea the whole product turns on. Collapsed by default, on purpose. */
+.reveal{margin-top:22px}
+.reveal button{display:inline-flex;align-items:center;gap:9px;background:none;border:0;padding:4px 0;
+  color:var(--ink-3);font-family:var(--serif);font-size:13.5px;letter-spacing:.08em;cursor:pointer;
+  transition:color .25s var(--ease)}
+.reveal button:hover{color:var(--ink-2)}
+.reveal button .chev{display:inline-block;color:var(--seal);font-size:13px;line-height:1;
+  transition:transform .4s var(--spring)}
 .reveal[data-open=true] button .chev{transform:rotate(90deg)}
-.reveal .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s var(--ease),
-  opacity .3s var(--ease);opacity:0;margin-top:0}
-.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1;margin-top:14px}
+.reveal .body{display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows .45s var(--ease),opacity .35s var(--ease)}
+.reveal[data-open=true] .body{grid-template-rows:1fr;opacity:1}
 .reveal .body > div{overflow:hidden}
-.note{border-left:2px solid var(--cloth,var(--rule));padding:2px 0 2px 16px;
-  font-size:15.5px;line-height:1.85;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
-.note .who{display:block;font-size:11.5px;letter-spacing:.12em;color:var(--ink-3);
-  margin-bottom:7px;font-weight:500}
+/* 旁批: the reader's own words, in a hand, beside the print */
+.note{margin-top:12px;padding:2px 0 2px 18px;border-left:1.5px solid var(--cloth,var(--rule));
+  font-family:var(--kai);font-size:17.5px;line-height:1.9;color:var(--ink-2);
+  white-space:pre-line;word-break:break-word}
 
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
-.answers button{padding:15px 12px;border-radius:2px;border:1px solid var(--rule);
-  background:transparent;color:var(--ink-2);font:inherit;font-size:15px;cursor:pointer;
-  transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease);
-  font-family:var(--serif);letter-spacing:.06em}
-.answers button:hover{background:var(--paper)}
-.answers .again:hover{border-color:var(--again);color:var(--again)}
-.answers .got:hover{border-color:var(--ok);color:var(--ok)}
-/* The answer's consequence, said out loud. Without this the two buttons feel identical even
-   when they schedule differently: the card just vanishes either way, which is exactly what
-   a reader reported. One short line, long enough to read, gone before it gets tiring. */
-.echo{text-align:center;padding:26px 0 6px;font-family:var(--serif);font-size:15px;
-  letter-spacing:.08em;color:var(--ink-2);animation:echoIn .32s var(--ease) both}
-.echo b{font-weight:500;color:var(--cloth,var(--ink))}
-@keyframes echoIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.echo{animation:none}}
-.hint{text-align:center;margin-top:16px;font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+/* the two answers, and what each one would do, said before you press */
+.answers{display:grid;grid-template-columns:1fr 1fr;margin-top:26px;border-top:1px solid var(--rule-2)}
+.answers button{background:none;border:0;padding:16px 8px 6px;color:var(--ink-2);cursor:pointer;
+  font-family:var(--serif);font-size:16.5px;letter-spacing:.16em;text-indent:.16em;line-height:1.3;
+  transition:color .25s var(--ease),transform .15s var(--ease)}
+.answers button+button{border-left:1px solid var(--rule-2)}
+.answers button small{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.06em;
+  text-indent:0;color:var(--ink-3);margin-top:5px}
+.answers .got{color:var(--ink)}
+.answers .got:hover{color:var(--seal)}
+.answers .again:hover{color:var(--again)}
+.answers button:active{transform:scale(.97)}
+
+/* the stamp: lands on the page the moment you answer, then the page turns */
+.stamp{position:absolute;right:28px;top:46%;width:60px;height:60px;margin-top:-30px;pointer-events:none;
+  border:2.5px solid currentColor;border-radius:5px;color:var(--seal);opacity:.88;
+  font-family:var(--serif);font-size:29px;font-weight:500;line-height:1;display:grid;place-items:center;
+  transform:rotate(-9deg);mix-blend-mode:multiply;animation:stampIn .42s var(--spring) both}
+.stamp.again{color:var(--ink-3)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .stamp{mix-blend-mode:normal}}
+@keyframes stampIn{from{opacity:0;transform:rotate(-9deg) scale(1.9)}
+  65%{opacity:.9;transform:rotate(-9deg) scale(.93)}to{opacity:.88;transform:rotate(-9deg) scale(1)}}
+
+/* folio, under the pile, in the numerals a book would use */
+.folio{text-align:center;margin-top:36px;font-family:var(--serif);font-size:13px;letter-spacing:.24em;
+  text-indent:.24em;color:var(--ink-3)}
+.hint{text-align:center;margin-top:14px;font-size:11.5px;color:var(--ink-3);letter-spacing:.04em;opacity:.9}
 .hint kbd{font:inherit;border:1px solid var(--rule);border-radius:3px;padding:0 5px;margin:0 2px}
 /* keyboard shortcuts mean nothing on a phone; (hover:none) is the touch signal, width is not */
 @media (hover:none){.hint{display:none}}
 
-/* ── stat strip ─────────────────────────────────────────── */
-.strip{display:flex;margin:0 0 34px;border-top:1px solid var(--rule-2);
-  border-bottom:1px solid var(--rule-2)}
-.strip div{flex:1;padding:15px 6px;text-align:center;position:relative}
-.strip div+div::before{content:"";position:absolute;left:0;top:26%;bottom:26%;width:1px;
-  background:var(--rule-2)}
-.strip b{display:block;font-family:var(--serif);font-size:23px;font-weight:500;
-  font-variant-numeric:tabular-nums;line-height:1.2}
-.strip span{font-size:11.5px;color:var(--ink-3);letter-spacing:.08em}
+@media (prefers-reduced-motion:reduce){
+  .page,.stamp,.seal{animation:none}
+  .page.leaving,.page.leaving-again{animation:none;opacity:0;transition:opacity .2s}
+  .reveal .body,.reveal button .chev{transition:none}
+}
 
-/* ── seal / done ────────────────────────────────────────── */
-.done{text-align:center;padding:66px 20px 40px}
-.seal{width:96px;height:96px;margin:0 auto 26px;border:2.5px solid var(--seal);border-radius:6px;
-  display:grid;place-items:center;color:var(--seal);font-family:var(--serif);font-size:25px;
-  line-height:1.15;letter-spacing:.08em;transform:rotate(-4deg);opacity:.92;
-  animation:stamp .55s var(--ease) both}
+/* ── stat strip (书架 only) ─────────────────────────────────────────────────────────────── */
+.strip{display:flex;margin:0 0 32px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.strip div{flex:1;padding:16px 6px;text-align:center;position:relative}
+.strip div+div::before{content:"";position:absolute;left:0;top:28%;bottom:28%;width:1px;background:var(--rule-2)}
+.strip b{display:block;font-family:var(--serif);font-size:26px;font-weight:500;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.strip span{font-size:11px;color:var(--ink-3);letter-spacing:.14em}
+
+/* ── done / empty ──────────────────────────────────────────────────────────────────────── */
+.done{text-align:center;padding:64px 20px 40px}
+.seal{width:112px;height:112px;margin:0 auto 28px;border:3px solid var(--seal);border-radius:8px;
+  display:grid;place-content:center;gap:2px;color:var(--seal);font-family:var(--serif);font-size:29px;
+  font-weight:500;line-height:1.1;letter-spacing:.1em;text-indent:.1em;transform:rotate(-5deg);opacity:.9;
+  animation:stampIn .5s var(--spring) both}
 .seal span{display:block}
-@keyframes stamp{0%{opacity:0;transform:rotate(-4deg) scale(1.5)}60%{opacity:.92;transform:rotate(-4deg) scale(.96)}100%{opacity:.92;transform:rotate(-4deg) scale(1)}}
-@media (prefers-reduced-motion:reduce){.seal{animation:none}}
-.done h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 8px;letter-spacing:.05em}
+.done h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 8px;letter-spacing:.06em}
 .done p{color:var(--ink-3);font-size:14px;margin:0}
 
-/* ── library ────────────────────────────────────────────── */
+.blank{text-align:center;padding:44px 0 20px}
+.blank .page{max-width:400px;margin:0 auto 28px;padding:48px 30px 44px;text-align:center;animation:none}
+.blank .page p{margin:0}
+.blank .page .t{font-family:var(--serif);font-size:19px;letter-spacing:.06em;margin-bottom:10px}
+.blank .page .s{color:var(--ink-3);font-size:14px;line-height:1.8}
+.blank button{padding:11px 26px;border:1px solid var(--ink-3);border-radius:var(--r);background:none;
+  color:var(--ink);font-family:var(--serif);font-size:14.5px;letter-spacing:.14em;text-indent:.14em;cursor:pointer;
+  transition:border-color .25s var(--ease),color .25s var(--ease),transform .15s var(--ease)}
+.blank button:hover{border-color:var(--seal);color:var(--seal)}
+.blank button:active{transform:scale(.97)}
+
+/* ── library ───────────────────────────────────────────────────────────────────────────── */
 .book{border-bottom:1px solid var(--rule-2)}
 .book:last-child{border-bottom:0}
-.book > summary{list-style:none;cursor:pointer;padding:15px 4px;display:flex;align-items:center;
-  gap:13px;transition:opacity .2s var(--ease)}
+.book > summary{list-style:none;cursor:pointer;padding:16px 4px;display:flex;align-items:center;gap:14px;
+  transition:opacity .2s var(--ease)}
 .book > summary::-webkit-details-marker{display:none}
 .book > summary:hover{opacity:.72}
-.spine{width:4px;height:26px;border-radius:2px;background:var(--cloth);flex:none}
-.book .bt{font-family:var(--serif);font-size:15.5px;flex:1;min-width:0;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
-.book .bn{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex:none}
-.book .items{padding:2px 0 16px 17px}
-.book .item{padding:11px 0;border-top:1px dotted var(--rule)}
-.book .item:first-child{border-top:0}
-.book .q{font-family:var(--serif);font-size:15px;line-height:1.8;color:var(--ink-2);
-  word-break:break-word}
-.book .sub{font-size:11.5px;color:var(--ink-3);margin-top:5px}
-.tag{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:99px;margin-left:7px;
-  border:1px solid var(--rule);color:var(--ink-3);letter-spacing:.04em}
+.spine{width:5px;height:30px;border-radius:2px;flex:none;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cloth) 78%,white),var(--cloth) 35%,
+    color-mix(in srgb,var(--cloth) 82%,black))}
+.book .bt{font-family:var(--serif);font-size:16px;flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em}
+.book .bn{font-family:var(--serif);font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex:none}
+.book .items{padding:0 0 18px 19px}
+.book .item{padding:13px 0;border-top:1px solid var(--rule-2)}
+.book .q{font-family:var(--serif);font-size:15.5px;line-height:1.85;color:var(--ink-2);word-break:break-word}
+.book .sub{font-size:12px;color:var(--ink-3);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;letter-spacing:.02em}
+.book .st{opacity:.8}
 
-/* ── import ─────────────────────────────────────────────── */
-.step{display:flex;gap:15px;padding:19px 0;border-bottom:1px solid var(--rule-2)}
-.step:last-of-type{border-bottom:0}
-.step .n{width:23px;height:23px;flex:none;border-radius:99px;border:1px solid var(--rule);
-  display:grid;place-items:center;font-size:12px;color:var(--ink-3);
-  font-variant-numeric:tabular-nums;margin-top:2px}
-.step h3{margin:0 0 5px;font-size:15px;font-weight:600}
-.step p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.75}
-.blet{display:inline-block;margin-top:11px;padding:9px 17px;border:1px solid var(--seal);
-  border-radius:2px;color:var(--seal);text-decoration:none;font-size:14px;
-  font-family:var(--serif);letter-spacing:.06em;cursor:grab;background:var(--paper-2)}
+/* ── import ────────────────────────────────────────────────────────────────────────────── */
+.step{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:22px 0;border-top:1px solid var(--rule-2)}
+.step:first-of-type{border-top:0;padding-top:6px}
+.step .n{font-family:var(--serif);font-size:24px;color:var(--ink-3);line-height:1.25;letter-spacing:.05em}
+.step h3{margin:0 0 6px;font-family:var(--serif);font-size:16.5px;font-weight:500;letter-spacing:.02em}
+.step p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.8}
+/* the bookmarklet is a bookmark, so it is drawn as one: a ribbon with a notched tail */
+.blet{display:inline-block;margin-top:12px;padding:10px 27px 10px 18px;background:var(--seal);color:#fff;
+  font-family:var(--serif);font-size:14.5px;letter-spacing:.1em;text-decoration:none;cursor:grab;
+  clip-path:polygon(0 0,100% 0,calc(100% - 10px) 50%,100% 100%,0 100%);
+  transition:filter .2s var(--ease)}
+.blet:hover{filter:brightness(1.06)}
 .blet:active{cursor:grabbing}
-.drop{border:1px dashed var(--rule);border-radius:3px;padding:34px 22px;text-align:center;
-  cursor:pointer;transition:border-color .2s var(--ease),background .2s var(--ease);margin-top:8px}
-.drop:hover,.drop.over{border-color:var(--seal);background:var(--paper-2)}
-.drop b{display:block;font-family:var(--serif);font-size:15.5px;font-weight:500;margin-bottom:5px}
+.drop{border:1px dashed var(--rule);border-radius:var(--r);padding:34px 22px;text-align:center;
+  cursor:pointer;background:var(--paper-2);margin-top:8px;
+  transition:border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.drop:hover,.drop.over{border-color:var(--seal);box-shadow:var(--lift-s)}
+.drop b{display:block;font-family:var(--serif);font-size:15.5px;font-weight:500;margin-bottom:5px;letter-spacing:.04em}
 .drop span{font-size:12.5px;color:var(--ink-3)}
 .log{font:12px/1.75 ui-monospace,"Cascadia Mono",Consolas,monospace;color:var(--ink-2);
   white-space:pre-wrap;margin-top:18px;padding:13px 15px;background:var(--paper-2);
-  border:1px solid var(--rule-2);border-radius:3px;max-height:180px;overflow:auto}
+  border:1px solid var(--rule-2);border-radius:var(--r);max-height:180px;overflow:auto}
 .log:empty{display:none}
-.tools{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
-.tools button{padding:8px 14px;border-radius:2px;border:1px solid var(--rule);background:none;
-  color:var(--ink-3);font:inherit;font-size:13px;cursor:pointer;transition:all .2s var(--ease)}
+.tools{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px}
+.tools button{padding:2px 0;border:0;border-bottom:1px solid var(--rule);background:none;
+  color:var(--ink-3);font:inherit;font-size:13px;cursor:pointer;
+  transition:color .25s var(--ease),border-color .25s var(--ease)}
 .tools button:hover{color:var(--ink);border-color:var(--ink-3)}
 .tools button.danger:hover{color:var(--seal);border-color:var(--seal)}
 
-.blank{text-align:center;padding:64px 20px}
-.blank h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 9px}
-.blank p{color:var(--ink-3);font-size:14px;margin:0 0 20px}
-.blank button{padding:10px 20px;border:1px solid var(--rule);border-radius:2px;background:none;
-  color:var(--ink);font:inherit;font-size:14px;font-family:var(--serif);letter-spacing:.06em;
-  cursor:pointer}
-.blank button:hover{border-color:var(--seal);color:var(--seal)}
-h2.sec{font-family:var(--serif);font-size:16px;font-weight:500;margin:0 0 4px;letter-spacing:.04em}
+h2.sec{font-family:var(--serif);font-size:17px;font-weight:500;margin:0 0 4px;letter-spacing:.05em}
 p.sub{font-size:13px;color:var(--ink-3);margin:0 0 22px}
+
+@media (max-width:480px){
+  main{padding:22px 16px 84px}
+  .stage{min-height:calc(100dvh - 190px)}
+  .page{padding:26px 22px 16px 26px}
+}
 </style>
 </head>
 <body>
 <header><div class="bar">
-  <span class="mark">回读</span>
+  <a class="brand" href="./">
+    <svg class="sealmark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="3.5" fill="currentColor"/><text x="12" y="17.3" text-anchor="middle" font-size="14.5" font-weight="500" font-family="Noto Serif CJK SC,Source Han Serif SC,Songti SC,SimSun,serif" fill="var(--paper-2)">回</text></svg>
+    <span class="mark">回读</span>
+  </a>
   <nav>
     <button data-view="review" aria-current="true">今日</button>
     <button data-view="library">书架</button>
@@ -235,7 +302,7 @@ import { importWeRead } from '../src/import-weread.mjs';
 import { mergeById, validate } from '../src/schema.mjs';
 import { pickDaily, grade, stats as calcStats, isNew } from '../src/review.mjs';
 import { allCards, putAll, putOne, clearAll, exportJson } from './store.mjs';
-import { clothCss, agoText, monthText, esc, hangsFirstGlyph, num } from './ui.mjs';
+import { clothCss, agoText, esc, hangsFirstGlyph, num, cnNum, cnify, chopGlyph } from './ui.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const view = $('#view');
@@ -253,9 +320,9 @@ function render(){
   const t = now();
   const s = calcStats(cards, t);
   const left = pickDaily(cards, { now: t, size: 10, maxNew: 5 }).length;
-  // The 今日 screen deliberately shows no numbers: the dots already say where you are, and a
-  // stat row above the card both crowds it off a laptop screen and turns reading into a metric.
-  // The counts live on 书架, where looking at your collection is the point.
+  // The 今日 screen deliberately shows no counts: the pile behind the page and the folio say
+  // where you are, and a stat row above the page turns reading into a metric. The counts live
+  // on 书架, where looking at your collection is the point.
   $('#strip').innerHTML = (cards.length && where !== 'review') ? `<div class="strip">${[
     ['今日待读', left], ['已回顾', s.reviewed], ['未读过', s.new], ['全部', s.total],
   ].map(([k,v]) => `<div><b>${num(v)}</b><span>${k}</span></div>`).join('')}</div>` : '';
@@ -267,9 +334,10 @@ function render(){
 /* ── 今日 ─────────────────────────────────────────────── */
 function drawReview(){
   if (!cards.length){
-    view.innerHTML = `<div class="blank"><h2>书架还是空的</h2>
-      <p>把微信读书里划过的线接过来，它们才有机会再见到你。</p>
-      <button id="go">去导入</button></div>`;
+    view.innerHTML = `<div class="stage"><div class="blank">
+      <article class="page"><p class="t">书架还是空的</p>
+        <p class="s">把微信读书里划过的线接过来，<br>它们才有机会再见到你。</p></article>
+      <button id="go">去导入</button></div></div>`;
     $('#go').onclick = () => { where = 'import'; render(); };
     return;
   }
@@ -278,37 +346,44 @@ function drawReview(){
     at = 0;
   }
   if (!batch.length){
-    view.innerHTML = `<div class="done">
+    view.innerHTML = `<div class="stage"><div class="done">
       <div class="seal"><span>今日</span><span>已毕</span></div>
-      <h2>今天读完了</h2><p>明天会有新的一批等你。</p></div>`;
+      <h2>今天读完了</h2><p>明天会有新的一批等你。</p></div></div>`;
     return;
   }
   const c = batch[at];
+  const t = now();
   const cloth = clothCss(c.bookId);
-  const seen = isNew(c) ? '第一次见' : `第 ${c.review.reps + 1} 次见`;
-  view.innerHTML = `
-    <div class="dots">${batch.map((_, i) =>
-      `<i class="${i < at ? 'done' : i === at ? 'here' : ''}"></i>`).join('')}</div>
-    <article class="sheet" style="--cloth:${cloth}">
-      <div class="meta">
-        <span class="title">${esc(c.bookTitle)}</span>
-        ${c.bookAuthor ? esc(c.bookAuthor) + '<span class="sep">·</span>' : ''}
-        ${c.chapter ? esc(c.chapter) : '整本书'}
-        <br>
-        <span class="ago">${agoText(c.createdAt, now())}</span>
-        <span class="sep">·</span>${seen}
-      </div>
-      ${c.text ? `<blockquote class="${hangsFirstGlyph(c.text) ? 'hang' : ''}">${esc(c.text)}</blockquote>` : ''}
-      ${c.note ? `<div class="reveal" data-open="false" id="rv">
-          <button type="button"><span class="chev">›</span>你当时写了一句话</button>
-          <div class="body"><div><div class="note">${esc(c.note)}</div></div></div>
-        </div>` : ''}
-      <div class="answers">
-        <button class="again" data-a="again">再来</button>
-        <button class="got" data-a="got">记住了</button>
-      </div>
-    </article>
-    <div class="hint"><kbd>J</kbd> 再来 <kbd>K</kbd> 记住了 <kbd>空格</kbd> 展开当时的想法</div>`;
+  const seen = isNew(c) ? '第一次见' : `第${cnNum(c.review.reps + 1)}次见`;
+  // What each answer would do, said on the button itself. grade() is pure, so asking it twice
+  // costs nothing and the two buttons stop looking interchangeable.
+  const due = (o) => { const d = grade(c, o, t).review.interval; return d === 1 ? '明天见' : `${cnNum(d)}天后见`; };
+  const left = batch.length - at - 1;
+  view.innerHTML = `<div class="stage">
+    <div class="pile" data-left="${Math.min(2, left)}">
+      <article class="page" style="--cloth:${cloth}">
+        <div class="head">
+          <div class="l1"><span class="bk">${esc(c.bookTitle)}</span>${c.bookAuthor ? `<span class="au">${esc(c.bookAuthor)}</span>` : ''}</div>
+          <span class="chop" aria-hidden="true">${esc(chopGlyph(c.bookTitle))}</span>
+          <div class="l2">
+            <span class="ch">${c.chapter ? esc(c.chapter) : '整本书'}</span>
+            <span class="when"><span class="ago">${cnify(agoText(c.createdAt, t))}</span><span class="sep">·</span>${seen}</span>
+          </div>
+        </div>
+        ${c.text ? `<blockquote class="${hangsFirstGlyph(c.text) ? 'hang' : ''}">${esc(c.text)}</blockquote>` : ''}
+        ${c.note ? `<div class="reveal" data-open="false" id="rv">
+            <button type="button" aria-expanded="false"><span class="chev">›</span>你当时写了一句话</button>
+            <div class="body"><div><div class="note">${esc(c.note)}</div></div></div>
+          </div>` : ''}
+        <div class="answers">
+          <button class="again" data-a="again">再来<small>${due('again')}</small></button>
+          <button class="got" data-a="got">记住了<small>${due('got')}</small></button>
+        </div>
+      </article>
+    </div>
+    <div class="folio">${cnNum(at + 1)}／${cnNum(batch.length)}</div>
+    <div class="hint"><kbd>J</kbd> 再来 <kbd>K</kbd> 记住了 <kbd>空格</kbd> 展开当时的想法</div>
+  </div>`;
   const rv = $('#rv');
   if (rv) rv.querySelector('button').onclick = () => toggleNote();
   for (const b of view.querySelectorAll('[data-a]')) b.onclick = () => answer(b.dataset.a);
@@ -317,27 +392,29 @@ function drawReview(){
 function toggleNote(){
   const rv = $('#rv');
   if (!rv) return;
-  rv.dataset.open = rv.dataset.open === 'true' ? 'false' : 'true';
+  const open = rv.dataset.open !== 'true';
+  rv.dataset.open = String(open);
+  rv.querySelector('button').setAttribute('aria-expanded', String(open));
 }
 
 async function answer(outcome){
   if (busy) return;
   busy = true;
-  const sheet = $('.sheet');
+  const page = $('.page');
   const g = grade(batch[at], outcome, now());
-  const d = g.review.interval;
-  if (sheet){
-    sheet.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
-    const echo = document.createElement('div');
-    echo.className = 'echo';
-    echo.style.setProperty('--cloth', clothCss(g.bookId));
-    echo.innerHTML = `${outcome === 'got' ? '记住了' : '再来'}　<b>${d === 1 ? '明天见' : d + ' 天后见'}</b>`;
-    sheet.parentNode.insertBefore(echo, sheet.nextSibling);
+  const quick = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (page){
+    // stamp first, turn second: the delay on the leaving animation is what makes it read as
+    // "stamped, then filed", not two things happening at once
+    const stamp = document.createElement('span');
+    stamp.className = 'stamp' + (outcome === 'got' ? '' : ' again');
+    stamp.textContent = outcome === 'got' ? '记' : '再';
+    page.appendChild(stamp);
+    page.classList.add(outcome === 'got' ? 'leaving' : 'leaving-again');
   }
   await putOne(g);
   cards = cards.map(x => x.id === g.id ? g : x);
-  // long enough to read the line, short enough not to feel like waiting
-  await new Promise(r => setTimeout(r, sheet ? 640 : 120));
+  await new Promise(r => setTimeout(r, page ? (quick ? 220 : 900) : 120));
   at++;
   busy = false;
   render();
@@ -346,7 +423,8 @@ async function answer(outcome){
 /* ── 书架 ─────────────────────────────────────────────── */
 function drawLibrary(){
   if (!cards.length){
-    view.innerHTML = `<div class="blank"><h2>还没有东西</h2><p>导入之后，这里按书排列。</p></div>`;
+    view.innerHTML = `<div class="blank">
+      <article class="page"><p class="t">还没有东西</p><p class="s">导入之后，这里按书排列。</p></article></div>`;
     return;
   }
   const byBook = new Map();
@@ -366,9 +444,8 @@ function drawLibrary(){
         <div class="items">${b.items.map(c => `
           <div class="item">
             <div class="q">${esc(c.text || c.note)}</div>
-            <div class="sub">${c.chapter ? esc(c.chapter) + ' · ' : ''}${agoText(c.createdAt, now())}
-              ${isNew(c) ? '<span class="tag">没读过</span>'
-                : `<span class="tag">间隔 ${c.review.interval} 天</span>`}</div>
+            <div class="sub"><span>${c.chapter ? esc(c.chapter) + ' · ' : ''}${agoText(c.createdAt, now())}</span>
+              <span class="st">${isNew(c) ? '没读过' : `间隔 ${c.review.interval} 天`}</span></div>
           </div>`).join('')}</div>
       </details>`).join('')}`;
 }
@@ -379,19 +456,19 @@ async function drawImport(){
   try { blet = (await (await fetch('./bookmarklet.txt')).text()).trim(); } catch {}
   view.innerHTML = `<h2 class="sec">把微信读书的划线接过来</h2>
     <p class="sub">全程在你自己的电脑上，没有服务器，没有账号，什么都不会上传。</p>
-    <div class="step"><div class="n">1</div><div>
-      <h3>把下面这个按钮拖到浏览器书签栏</h3>
+    <div class="step"><div class="n">一</div><div>
+      <h3>把下面这枚书签拖到浏览器书签栏</h3>
       <p>它是一段只在微信读书网页上运行的小脚本，不是插件，不用安装。
         <br>看不到书签栏就按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> 打开。</p>
       ${blet ? `<a class="blet" href="${esc(blet)}" draggable="true"
         onclick="alert('别在这里点它。请把它拖到书签栏，然后到 weread.qq.com 上点。');return false">取回我的划线</a>`
         : `<p style="color:var(--seal)">书签脚本没生成，先跑 node tools/build-bookmarklet.mjs</p>`}
     </div></div>
-    <div class="step"><div class="n">2</div><div>
-      <h3>打开 weread.qq.com 并登录，点一下那个书签</h3>
+    <div class="step"><div class="n">二</div><div>
+      <h3>打开 weread.qq.com 并登录，点一下那枚书签</h3>
       <p>右下角会显示进度，跑完自动下载一个 <code>weread-日期.json</code>。书多的话要等十几秒。</p>
     </div></div>
-    <div class="step"><div class="n">3</div><div>
+    <div class="step"><div class="n">三</div><div>
       <h3>把那个文件拖到下面</h3>
       <div class="drop" id="drop">
         <b>拖到这里，或点击选择</b>

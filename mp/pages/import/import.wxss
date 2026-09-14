@@ -1,78 +1,80 @@
-/* 导入 — three steps, because the route from a desktop browser to a phone is genuinely three
+/* 导入: three steps, because the route from a desktop browser to a phone is genuinely three
    steps and pretending otherwise would just confuse the reader. */
 
-.sec { font-family: "Songti SC", serif; font-size: 34rpx; letter-spacing: 0.04em; }
-.sub { font-size: 25rpx; color: #8a897f; margin: 10rpx 0 44rpx; line-height: 1.7; }
+.sec { font-family: "Songti SC", "STSong", serif; font-size: 34rpx; font-weight: 500; letter-spacing: 0.05em; }
+.sub { font-size: 25rpx; color: #8a8071; margin: 10rpx 0 36rpx; line-height: 1.7; }
 
 .step {
   display: flex;
-  padding: 34rpx 0;
-  border-bottom: 1rpx solid #ebebe7;
+  padding: 36rpx 0;
+  border-top: 1rpx solid #e4ddce;
 }
-.step:last-of-type { border-bottom: 0; }
+.step:first-of-type { border-top: 0; padding-top: 8rpx; }
 .step .n {
-  width: 44rpx;
-  height: 44rpx;
+  width: 72rpx;
   flex: none;
-  border-radius: 99rpx;
-  border: 1rpx solid #dededa;
-  color: #8a897f;
-  font-size: 24rpx;
-  text-align: center;
-  line-height: 44rpx;
-  margin-right: 26rpx;
-  margin-top: 4rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 44rpx;
+  color: #8a8071;
+  line-height: 1.25;
+  letter-spacing: 0.05em;
 }
 .step .b { flex: 1; min-width: 0; }
-.step .h { font-size: 29rpx; font-weight: 600; margin-bottom: 10rpx; }
-.step .p { font-size: 25rpx; color: #57564f; line-height: 1.75; }
+.step .h {
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 31rpx;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 10rpx;
+}
+.step .p { font-size: 26rpx; color: #5a5245; line-height: 1.8; }
 
 .link {
   display: inline-block;
   margin-top: 20rpx;
   font-size: 26rpx;
-  color: #b0302a;
-  border-bottom: 1rpx solid #b0302a;
+  color: #b23a2e;
+  border-bottom: 1rpx solid #b23a2e;
   padding-bottom: 2rpx;
 }
 
+/* the one action on this page, drawn as the bookmark it stands for */
 .pick {
-  margin: 20rpx 0 16rpx;
-  padding: 26rpx 0;
-  text-align: center;
-  border: 1rpx dashed #dededa;
-  border-radius: 4rpx;
-  font-family: "Songti SC", serif;
-  font-size: 30rpx;
-  letter-spacing: 0.06em;
-  background: #fcfcfb;
+  display: inline-block;
+  margin: 20rpx 0 18rpx;
+  padding: 22rpx 60rpx 22rpx 40rpx;
+  background: #b23a2e;
+  color: #fff;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 29rpx;
+  letter-spacing: 0.1em;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 20rpx) 50%, 100% 100%, 0 100%);
 }
-.pick:active { border-color: #b0302a; color: #b0302a; }
+.pick:active { opacity: 0.85; }
 
 .log {
   margin-top: 36rpx;
   padding: 24rpx 28rpx;
-  background: #fcfcfb;
-  border: 1rpx solid #ebebe7;
-  border-radius: 4rpx;
+  background: #f8f5ee;
+  border: 1rpx solid #e4ddce;
+  border-radius: 8rpx;
   font-size: 24rpx;
   line-height: 1.8;
-  color: #57564f;
+  color: #5a5245;
 }
 
 .tally {
   margin-top: 28rpx;
   font-size: 24rpx;
-  color: #8a897f;
+  color: #8a8071;
 }
 
 .tools { margin-top: 56rpx; }
 .danger {
   display: inline-block;
-  padding: 18rpx 34rpx;
-  border: 1rpx solid #dededa;
-  border-radius: 4rpx;
+  padding: 4rpx 0;
+  border-bottom: 1rpx solid #d8d0bf;
   font-size: 25rpx;
-  color: #8a897f;
+  color: #8a8071;
 }
-.danger:active { color: #b0302a; border-color: #b0302a; }
+.danger:active { color: #b23a2e; border-color: #b23a2e; }

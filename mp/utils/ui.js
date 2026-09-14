@@ -77,4 +77,39 @@ function nowSec() {
   return Math.floor(Date.now() / 1000);
 }
 
-module.exports = { CLOTH, clothOf, clothCss, agoText, monthText, hangsFirstGlyph, nowSec, DAY };
+/**
+ * 3 -> 三, 16 -> 十六, 340 -> 三百四十. The 今日 page is typeset like a book page, and a book
+ * page says 三年前 and 一／五, not 3 and 1/5. Covers 0..999; larger values fall back to digits.
+ * Ported from app/ui.mjs; keep identical.
+ */
+const CN = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+function cnNum(n) {
+  n = Math.trunc(Number(n));
+  if (!isFinite(n) || n < 0 || n > 999) return String(n);
+  if (n < 10) return CN[n];
+  const h = Math.floor(n / 100);
+  const t = Math.floor((n % 100) / 10);
+  const u = n % 10;
+  let s = '';
+  if (h) s += CN[h] + '百';
+  if (t) s += (h && t === 1 ? '一十' : t === 1 ? '十' : CN[t] + '十');
+  else if (h && u) s += '零';
+  if (u) s += CN[u];
+  return s;
+}
+
+/** "3 年 10 个月前" -> "三年十个月前". Display-only; agoText keeps digits for 书架. */
+function cnify(s) {
+  return String(s == null ? '' : s).replace(/\s*(\d+)\s*/g, function (_, d) { return cnNum(d); });
+}
+
+/** The 藏书章 glyph for a book: its first CJK character, or 书 when there is none. */
+function chopGlyph(title) {
+  const m = String(title == null ? '' : title).match(/[㐀-䶿一-鿿]/);
+  return m ? m[0] : '书';
+}
+
+module.exports = {
+  CLOTH, clothOf, clothCss, agoText, monthText, hangsFirstGlyph, nowSec, DAY,
+  cnNum, cnify, chopGlyph,
+};

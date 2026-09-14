@@ -1,68 +1,81 @@
 <view class="wrap">
 
   <!-- nothing imported yet -->
-  <view wx:if="{{ready && empty}}" class="blank">
-    <view class="blank-h">书架还是空的</view>
-    <view class="blank-p">把微信读书里划过的线接过来，它们才有机会再见到你。</view>
-    <view class="blank-btn" bindtap="goImport">去导入</view>
+  <view wx:if="{{ready && empty}}" class="stage">
+    <view class="blank">
+      <view class="page blank-page">
+        <view class="spine"></view>
+        <view class="blank-h">书架还是空的</view>
+        <view class="blank-p">把微信读书里划过的线接过来，</view>
+        <view class="blank-p">它们才有机会再见到你。</view>
+      </view>
+      <view class="blank-btn" bindtap="goImport">去导入</view>
+    </view>
   </view>
 
   <!-- today's batch finished -->
-  <view wx:elif="{{ready && done}}" class="done">
-    <view class="seal"><text>今日</text><text>已毕</text></view>
-    <view class="done-h">今天读完了</view>
-    <view class="done-p">明天会有新的一批等你。</view>
+  <view wx:elif="{{ready && done}}" class="stage">
+    <view class="done">
+      <view class="seal"><text>今日</text><text>已毕</text></view>
+      <view class="done-h">今天读完了</view>
+      <view class="done-p">明天会有新的一批等你。</view>
+    </view>
   </view>
 
-  <!-- the card -->
-  <block wx:elif="{{ready && card}}">
-    <view class="dots">
-      <view
-        wx:for="{{batch}}"
-        wx:key="id"
-        class="dot {{index < at ? 'done' : (index === at ? 'here' : '')}}"
-      ></view>
+  <!-- the page, with what is left today piled behind it -->
+  <view wx:elif="{{ready && card}}" class="stage">
+    <view class="pile">
+      <view wx:if="{{left >= 2}}" class="ghost g2"></view>
+      <view wx:if="{{left >= 1}}" class="ghost g1"></view>
+
+      <view class="page {{leaving === 'got' ? 'leaving' : (leaving === 'again' ? 'leaving-again' : '')}}">
+        <view class="spine" style="background-color:{{cloth}}"></view>
+        <view class="chop">{{glyph}}</view>
+
+        <!-- separate views, not a \n inside <text>: WXML does not render an escaped newline -->
+        <view class="head">
+          <view class="l1">
+            <text class="bk">{{card.bookTitle}}</text>
+            <text wx:if="{{card.bookAuthor}}" class="au">{{card.bookAuthor}}</text>
+          </view>
+          <view class="l2">
+            <text class="ch">{{card.chapter || '整本书'}}</text>
+            <view class="when">
+              <text class="ago" style="color:{{cloth}}">{{ago}}</text>
+              <text class="sep">·</text>
+              <text>{{seen}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{card.text}}" class="quote {{hang ? 'hang' : ''}}">{{card.text}}</view>
+
+        <!-- the reveal: the reader's own past words, hidden until asked for -->
+        <view wx:if="{{card.note}}" class="reveal">
+          <view class="reveal-btn" bindtap="toggleNote">
+            <text class="chev {{noteOpen ? 'open' : ''}}">›</text>
+            <text>你当时写了一句话</text>
+          </view>
+          <view wx:if="{{noteOpen}}" class="note" style="border-left-color:{{cloth}}">{{card.note}}</view>
+        </view>
+
+        <!-- the two answers, and what each would do, said before you press -->
+        <view class="answers">
+          <view class="ans again" bindtap="onAgain">
+            <text class="ans-t">再来</text>
+            <text class="ans-s">{{dueAgain}}</text>
+          </view>
+          <view class="ans got" bindtap="onGot">
+            <text class="ans-t">记住了</text>
+            <text class="ans-s">{{dueGot}}</text>
+          </view>
+        </view>
+
+        <view wx:if="{{stamp}}" class="stamp {{stamp === '再' ? 'again' : ''}}">{{stamp}}</view>
+      </view>
     </view>
 
-    <view wx:if="{{echo}}" class="echo" style="color:{{cloth}}">{{echo}}</view>
-
-    <view wx:else class="sheet">
-      <view class="spine" style="background:{{cloth}}"></view>
-
-      <!-- two separate views, not a \n inside <text>: WXML does not render an escaped
-           newline there, so the second line would silently run into the first -->
-      <view class="meta">
-        <text class="title">{{card.bookTitle}}</text>
-        <view class="line">
-          <text wx:if="{{card.bookAuthor}}">{{card.bookAuthor}}</text>
-          <text wx:if="{{card.bookAuthor}}" class="sep">·</text>
-          <text>{{card.chapter || '整本书'}}</text>
-        </view>
-        <view class="line">
-          <text style="color:{{cloth}}">{{ago}}</text>
-          <text class="sep">·</text>
-          <text>{{seen}}</text>
-        </view>
-      </view>
-
-      <view wx:if="{{card.text}}" class="quote {{hang ? 'hang' : ''}}">{{card.text}}</view>
-
-      <!-- the reveal: the reader's own past words, hidden until asked for -->
-      <view wx:if="{{card.note}}" class="reveal">
-        <view class="reveal-btn" bindtap="toggleNote" style="color:{{noteOpen ? cloth : '#918879'}}">
-          <text class="chev">{{noteOpen ? '⌄' : '›'}}</text>
-          <text>你当时写了一句话</text>
-        </view>
-        <view wx:if="{{noteOpen}}" class="note" style="border-left-color:{{cloth}}">{{card.note}}</view>
-      </view>
-
-      <view class="answers">
-        <view class="ans again" bindtap="onAgain">再来</view>
-        <view class="ans got" bindtap="onGot">记住了</view>
-      </view>
-    </view>
-
-    <view wx:if="{{!echo}}" class="counter">{{at + 1}} / {{batch.length}}</view>
-  </block>
+    <view class="folio">{{folio}}</view>
+  </view>
 
 </view>

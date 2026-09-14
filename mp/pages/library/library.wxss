@@ -1,65 +1,97 @@
-/* 书架 — the counts belong here, not on 今日. */
+/* 书架: the catalogue. The counts belong here, not on 今日. */
 
 .strip {
   display: flex;
-  border-top: 1rpx solid #ebebe7;
-  border-bottom: 1rpx solid #ebebe7;
-  margin-bottom: 52rpx;
+  border-top: 1rpx solid #d8d0bf;
+  border-bottom: 1rpx solid #d8d0bf;
+  margin-bottom: 56rpx;
 }
-.cell { flex: 1; padding: 28rpx 8rpx; text-align: center; }
+.cell { flex: 1; padding: 30rpx 8rpx; text-align: center; position: relative; }
+.cell + .cell::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 28%;
+  bottom: 28%;
+  width: 1rpx;
+  background: #e4ddce;
+}
 .cell .n {
   display: block;
-  font-family: "Songti SC", serif;
-  font-size: 44rpx;
-  line-height: 1.2;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 50rpx;
+  font-weight: 500;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
 }
-.cell .k { font-size: 22rpx; color: #8a897f; letter-spacing: 0.08em; }
+.cell .k { font-size: 22rpx; color: #8a8071; letter-spacing: 0.14em; }
 
-.sec { font-family: "Songti SC", serif; font-size: 32rpx; letter-spacing: 0.04em; }
-.sub { font-size: 25rpx; color: #8a897f; margin: 8rpx 0 40rpx; }
+.sec { font-family: "Songti SC", "STSong", serif; font-size: 34rpx; font-weight: 500; letter-spacing: 0.05em; }
+.sub { font-size: 25rpx; color: #8a8071; margin: 8rpx 0 40rpx; }
 
-.book { border-bottom: 1rpx solid #ebebe7; }
-.row { display: flex; align-items: center; padding: 28rpx 4rpx; }
-.pin { width: 8rpx; height: 48rpx; border-radius: 4rpx; flex: none; margin-right: 24rpx; }
+.book { border-bottom: 1rpx solid #e4ddce; }
+.row { display: flex; align-items: center; padding: 30rpx 4rpx; }
+.row:active { opacity: 0.72; }
+.pin {
+  width: 10rpx;
+  height: 58rpx;
+  border-radius: 4rpx;
+  flex: none;
+  margin-right: 26rpx;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 35%, rgba(0, 0, 0, 0.18));
+}
 .bt {
   flex: 1;
   min-width: 0;
-  font-family: "Songti SC", serif;
-  font-size: 30rpx;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 31rpx;
+  letter-spacing: 0.02em;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.bn { font-size: 24rpx; color: #8a897f; flex: none; margin-left: 16rpx; }
+.bn {
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 25rpx;
+  color: #8a8071;
+  flex: none;
+  margin-left: 16rpx;
+  font-variant-numeric: tabular-nums;
+}
 
-.items { padding: 4rpx 0 28rpx 32rpx; }
-.item { padding: 22rpx 0; border-top: 1rpx dotted #dededa; }
-.item:first-child { border-top: 0; }
+.items { padding: 0 0 32rpx 36rpx; }
+.item { padding: 24rpx 0; border-top: 1rpx solid #e4ddce; }
 .q {
-  font-family: "Songti SC", serif;
-  font-size: 29rpx;
-  line-height: 1.8;
-  color: #57564f;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 30rpx;
+  line-height: 1.85;
+  color: #5a5245;
   word-break: break-word;
 }
-.sub2 { font-size: 22rpx; color: #8a897f; margin-top: 10rpx; }
-.tag {
-  display: inline-block;
-  font-size: 20rpx;
-  padding: 2rpx 14rpx;
-  border-radius: 99rpx;
-  border: 1rpx solid #dededa;
-  margin-left: 14rpx;
+.sub2 {
+  display: flex;
+  gap: 28rpx;
+  flex-wrap: wrap;
+  font-size: 23rpx;
+  color: #8a8071;
+  margin-top: 10rpx;
+  letter-spacing: 0.02em;
 }
+.st { opacity: 0.8; }
 
-.blank { text-align: center; padding: 130rpx 0; }
-.blank-h { font-family: "Songti SC", serif; font-size: 36rpx; margin-bottom: 18rpx; }
-.blank-p { color: #8a897f; font-size: 27rpx; margin-bottom: 44rpx; }
+.blank { text-align: center; padding: 60rpx 0; }
+.blank-page { padding: 96rpx 60rpx 88rpx; text-align: center; margin-bottom: 56rpx; }
+.blank-h { font-family: "Songti SC", "STSong", serif; font-size: 38rpx; letter-spacing: 0.06em; margin-bottom: 20rpx; }
+.blank-p { color: #8a8071; font-size: 28rpx; line-height: 1.8; }
 .blank-btn {
   display: inline-block;
-  padding: 22rpx 48rpx;
-  border: 1rpx solid #dededa;
-  border-radius: 4rpx;
-  font-family: "Songti SC", serif;
+  padding: 22rpx 52rpx;
+  border: 1rpx solid #8a8071;
+  border-radius: 8rpx;
+  font-family: "Songti SC", "STSong", serif;
   font-size: 29rpx;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  color: #231f19;
 }
+.blank-btn:active { border-color: #b23a2e; color: #b23a2e; }

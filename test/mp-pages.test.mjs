@@ -122,28 +122,35 @@ test('review page shows a card with everything the template binds', () => {
   assert.equal(page.data.done, false);
   assert.ok(page.data.card, '应该有一张卡');
   assert.equal(page.data.batch.length, 5, '第一天给 5 张新卡');
-  for (const k of ['cloth', 'ago', 'month', 'seen']) {
+  for (const k of ['cloth', 'glyph', 'ago', 'seen', 'folio', 'dueGot', 'dueAgain']) {
     assert.ok(page.data[k], `模板绑定的 ${k} 不能为空`);
   }
   assert.match(page.data.cloth, /^hsl\(/, 'cloth 必须是可用的颜色字符串');
-  assert.equal(page.data.noteOpen, false, '当时写的想法默认收起——这是产品唯一的设计主张');
+  assert.equal(page.data.folio, '一／五', '页码用汉字数字');
+  assert.equal(page.data.left, 2, '后面还有四页，叠着最多画两页');
+  assert.doesNotMatch(page.data.ago, /\d/, '今日页上的时间用汉字数字');
+  assert.equal(page.data.noteOpen, false, '当时写的想法默认收起：这是产品唯一的设计主张');
 });
 
-test('the two buttons differ, and the echo says how', () => {
+test('the two buttons differ, and each says how before you press', () => {
   const env = makeWx();
   loadPage('pages/import/import.js', env).ingest(fixtureBlobs().map((p) => ({ path: p, name: p })));
 
   const a = loadPage('pages/review/review.js', env);
   a.onShow();
+  assert.equal(a.data.dueGot, '三天后见', '记住了：新卡进 3 天档');
+  assert.equal(a.data.dueAgain, '明天见', '再来：明天见');
   a.onGot();
-  assert.ok(a.data.echo.includes('3 天后见'), `记住了应说 3 天后见，实际：${a.data.echo}`);
+  assert.equal(a.data.stamp, '记', '答完先盖章');
+  assert.equal(a.data.leaving, 'got');
 
   const env2 = makeWx();
   loadPage('pages/import/import.js', env2).ingest(fixtureBlobs().map((p) => ({ path: p, name: p })));
   const b = loadPage('pages/review/review.js', env2);
   b.onShow();
   b.onAgain();
-  assert.ok(b.data.echo.includes('明天见'), `再来应说明天见，实际：${b.data.echo}`);
+  assert.equal(b.data.stamp, '再');
+  assert.equal(b.data.leaving, 'again');
 });
 
 test('an empty install shows the blank state, not a crash', () => {
