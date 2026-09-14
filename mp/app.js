@@ -1,5 +1,5 @@
 /**
- * 回读 — 每天把你划过的线推几条回来。
+ * 回甘 — 每天把你划过的线推几条回来。
  *
  * Local-first: every highlight lives in this device's wx storage. There is no server, no
  * account, and no network call anywhere in this mini program, which is also why the whole

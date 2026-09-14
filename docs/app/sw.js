@@ -1,5 +1,5 @@
 /**
- * Service worker: make 回读 work with no network.
+ * Service worker: make 回甘 work with no network.
  *
  * The whole app is one HTML file plus icons, so the shell is tiny and can simply be precached.
  * Strategy is network-first for the page and cache-first for icons:

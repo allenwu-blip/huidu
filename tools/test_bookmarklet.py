@@ -41,7 +41,7 @@ def main():
         try:
             banner = page.evaluate(
                 "(()=>{const d=[...document.querySelectorAll('div')]"
-                ".filter(e=>e.textContent.startsWith('[回读]'));"
+                ".filter(e=>e.textContent.startsWith('[回甘]'));"
                 "return d.length?d[d.length-1].textContent:''})()"
             ) or ""
         except Exception as e:  # noqa: BLE001
