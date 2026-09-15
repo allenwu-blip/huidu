@@ -1,5 +1,5 @@
 /**
- * Service worker: make 百回读 work with no network.
+ * Service worker: make 卷中故人 work with no network.
  *
  * The whole app is one HTML file plus icons, so the shell is tiny and can simply be precached.
  * Strategy is network-first for the page and cache-first for icons:
@@ -11,7 +11,7 @@
  */
 // Icons keep their filenames across palette changes, so every icon change must roll the cache.
 // v2: neutral palette. v3: 纸与墨, the page redesign.
-const VERSION = 'huidu-v3';
+const VERSION = 'huidu-v4';
 const SHELL = [
   './',
   './index.html',

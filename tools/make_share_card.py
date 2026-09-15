@@ -107,8 +107,8 @@ def main():
     M = 84
 
     # brand row
-    chop(img, M, M - 8, 60, "回", angle=-6, alpha=255)
-    d.text((M + 84, M - 4), "百回读", font=font(SERIF_B, 52), fill=INK)
+    chop(img, M, M - 8, 60, "卷", angle=-6, alpha=255)
+    d.text((M + 84, M - 4), "卷中故人", font=font(SERIF_B, 52), fill=INK)
     d.text((M + 84, M + 56), "划过的线，过些日子再读一遍", font=font(SERIF, 27), fill=INK_2)
 
     # the page

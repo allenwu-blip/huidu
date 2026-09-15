@@ -49,7 +49,7 @@ def draw_icon(size, maskable=False):
     radius = max(2, int(size * 0.05))
     d.rounded_rectangle(box, radius=radius, outline=SEAL, width=border)
 
-    glyph = "回"
+    glyph = "卷"
     fsize = int((box[2] - box[0]) * 0.62)
     font = pick_font(fsize)
     l, t, r, b = d.textbbox((0, 0), glyph, font=font)
